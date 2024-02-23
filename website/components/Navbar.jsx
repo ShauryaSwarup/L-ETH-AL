@@ -33,7 +33,7 @@ export default function Navbar() {
                             className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52'
                         >
                             <li>
-                                <Link href='/joblistings'>Find a Job</Link>
+                                <Link href='/joblisting'>Find a Job</Link>
                             </li>
                             <li>
                                 <Link href='/employeelisting'>Hire People</Link>
@@ -53,7 +53,7 @@ export default function Navbar() {
                 <div className='navbar-center hidden lg:flex'>
                     <ul className='menu menu-horizontal px-1 font-bold bg-gray-500 bg-opacity-30 rounded-lg'>
                         <li>
-                            <Link href='/joblistings'>Find a Job</Link>
+                            <Link href='/joblisting'>Find a Job</Link>
                         </li>
                         <li>
                             <Link href='/employeelisting'>Hire People</Link>
