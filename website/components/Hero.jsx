@@ -1,22 +1,27 @@
-function Hero() {
-    return (
-        <div className='hero min-h-screen bg-base-200'>
-            <div className='hero-content text-center'>
-                <div className='max-w-md'>
-                    <h1 className='text-5xl font-bold'>Your decentralized Work Portal</h1>
-                    <div className="p-5 flex align-middle justify-around">
-                        <button className='btn btn-xs sm:btn-sm md:btn-md lg:btn-lg bg-gray-300 text-black m-5'>
-                            I want a job
-                        </button>
-                        <button className='btn btn-xs sm:btn-sm md:btn-md lg:btn-lg bg-gray-300 text-black m-5'>
-                            I want to hire
-                        </button>
-                    </div>
+import Link from "next/link";
 
-                    <button className='btn btn-primary'>Get Started</button>
-                </div>
-            </div>
-        </div>
-    );
+function Hero() {
+	return (
+		<div className="hero min-h-screen bg-base-200 flex flex-col items-center justify-center px-4">
+			<div className="text-center max-w-md">
+				<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+					Your Decentralized Work Portal
+				</h1>
+				<div className="flex flex-col sm:flex-row items-center justify-center mb-6 sm:mb-8">
+					<Link href="/joblisting">
+						<button className="btn btn-lg bg-gray-300 text-black mb-2 sm:mb-0 sm:mr-2">
+							I want a job
+						</button>
+					</Link>
+					<Link href="/employeelisting">
+						<button className="btn btn-lg bg-gray-300 text-black">
+							I want to hire
+						</button>
+					</Link>
+				</div>
+				<button className="btn btn-primary">Get Started</button>
+			</div>
+		</div>
+	);
 }
 export default Hero;
