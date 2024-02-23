@@ -1,5 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import Link from "next/link";
 
 export default function Navbar() {
     return (
@@ -32,46 +33,33 @@ export default function Navbar() {
                             className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52'
                         >
                             <li>
-                                <a>Item 1</a>
+                                <Link href='/joblistings'>Find a Job</Link>
                             </li>
                             <li>
-                                <a>Parent</a>
-                                <ul className='p-2'>
-                                    <li>
-                                        <a>Submenu 1</a>
-                                    </li>
-                                    <li>
-                                        <a>Submenu 2</a>
-                                    </li>
-                                </ul>
+                                <Link href='/employeelisting'>Hire People</Link>
                             </li>
                             <li>
-                                <a>Item 3</a>
+                                <Link href='/nftlisting'>My NFTs</Link>
                             </li>
                         </ul>
                     </div>
-                    <a className='btn btn-ghost text-xl'>daisyUI</a>
+                    <Link
+                        href='/'
+                        className='btn btn-ghost text-xl text-indigo-500 rounded-lg'
+                    >
+                        deWork
+                    </Link>
                 </div>
                 <div className='navbar-center hidden lg:flex'>
-                    <ul className='menu menu-horizontal px-1'>
+                    <ul className='menu menu-horizontal px-1 font-bold bg-gray-500 bg-opacity-30 rounded-lg'>
                         <li>
-                            <a>Item 1</a>
+                            <Link href='/joblistings'>Find a Job</Link>
                         </li>
                         <li>
-                            <details>
-                                <summary>Parent</summary>
-                                <ul className='p-2'>
-                                    <li>
-                                        <a>Submenu 1</a>
-                                    </li>
-                                    <li>
-                                        <a>Submenu 2</a>
-                                    </li>
-                                </ul>
-                            </details>
+                            <Link href='/employeelisting'>Hire People</Link>
                         </li>
                         <li>
-                            <a>Item 3</a>
+                            <Link href='/nftlisting'>My NFTs</Link>
                         </li>
                     </ul>
                 </div>
