@@ -9,6 +9,7 @@ contract WorkerCompanyMgmt is AccessControl{
     bytes32 public constant WORKER_ROLE = keccak256("WORKER_ROLE");
 
     error CallerNotCompany(address caller);
+    error CallerNotWorker(address caller);
 
     struct Company{
         string companyName;
@@ -17,6 +18,7 @@ contract WorkerCompanyMgmt is AccessControl{
 
     struct Worker{
         address walletAddress;
+        string location;
         bool isEmployed;
     }
 
@@ -33,12 +35,14 @@ contract WorkerCompanyMgmt is AccessControl{
     mapping (address => Company) public companies;
     mapping (address => mapping(uint256 => Job)) public companyJobs;
     mapping (uint256 => Job) public jobs;
+    mapping (uint256 => address[]) public jobApplicants;
+    mapping(string => address[]) private workersByLocation;
     uint256 jobIdCounter;
 
     event NewJobPosted(uint256 jobId, string title, uint256 salary, uint256 vacancies);
-    event JobApplication(address worker, uint256 jobId);
+    event ApplicationSubmitted(address worker, uint256 jobId);
     event CompanyAdded(string companyName, address company);
-    event WorkerAdded(address worker);
+    event WorkerAdded(address worker, string location);
 
     constructor(){
         jobIdCounter = 0;
@@ -55,12 +59,15 @@ contract WorkerCompanyMgmt is AccessControl{
     }
 
     function addWorker(
-        address _walletAddress
+        address _walletAddress, 
+        string memory _location
     ) external{
         require(workers[_walletAddress].walletAddress == address(0), "Company already exists");
-        workers[_walletAddress] = Worker(_walletAddress, false);
+        Worker memory newWorker = Worker(_walletAddress, _location, false);
+        workers[_walletAddress] = newWorker;
+        workersByLocation[_location].push(_walletAddress);
         _grantRole(WORKER_ROLE, _walletAddress);
-        emit WorkerAdded(_walletAddress);
+        emit WorkerAdded(_walletAddress, _location);
     }
 
     function postJob(
@@ -91,5 +98,39 @@ contract WorkerCompanyMgmt is AccessControl{
 
         return allJobs;
     } 
+
+    function applyForJob(uint256 _jobId) external {
+        if(!hasRole(WORKER_ROLE, msg.sender)){
+            revert CallerNotWorker(msg.sender);
+        }
+        require(workers[msg.sender].isEmployed == false, "Worker is already employed");
+
+        address[] storage applicants = jobApplicants[_jobId];
+        for (uint256 i = 0; i < applicants.length; i++) {
+            require(applicants[i] != msg.sender, "Worker has already applied for this job");
+        }
+
+        jobApplicants[_jobId].push(msg.sender); 
+
+        emit ApplicationSubmitted(msg.sender, _jobId);
+    }
+
+    function getAllApplicants(uint256 _jobId) external view returns (address[] memory) {
+        if(!hasRole(COMPANY_ROLE, msg.sender)){
+            revert CallerNotCompany(msg.sender);
+        }
+        return jobApplicants[_jobId];
+    }
+
+    function getWorkersByLocation(string memory _location) external view returns(Worker[] memory){
+        address[] memory workerAddresses = workersByLocation[_location];
+        Worker[] memory result = new Worker[](workerAddresses.length);
+
+        for (uint256 i = 0; i < workerAddresses.length; i++) {
+            result[i] = workers[workerAddresses[i]];
+        }
+
+        return result;
+    }
 
 }
