@@ -3,66 +3,76 @@ pragma solidity ^0.8.7;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract WorkerCompanyMgmt is AccessControl{
-    
+contract WorkerCompanyMgmt is AccessControl {
     bytes32 public constant COMPANY_ROLE = keccak256("COMPANY_ROLE");
     bytes32 public constant WORKER_ROLE = keccak256("WORKER_ROLE");
 
     error CallerNotCompany(address caller);
     error CallerNotWorker(address caller);
 
-    struct Company{
+    struct Company {
         string companyName;
         address walletAddress;
     }
 
-    struct Worker{
+    struct Worker {
         address walletAddress;
         string location;
         bool isEmployed;
     }
 
-    struct Job{
+    struct Job {
         uint256 jobId;
         string location;
         address company;
         address[] employedWorkers;
-        uint256 salary;   
+        uint256 salary;
         uint256 vacancies;
     }
 
-    mapping (address => Worker) public workers;
-    mapping (address => Company) public companies;
-    mapping (address => mapping(uint256 => Job)) public companyJobs;
-    mapping (uint256 => Job) public jobs;
-    mapping (uint256 => address[]) public jobApplicants;
+    mapping(address => Worker) public workers;
+    mapping(address => Company) public companies;
+    mapping(address => mapping(uint256 => Job)) public companyJobs;
+    mapping(uint256 => Job) public jobs;
+    mapping(uint256 => address[]) public jobApplicants;
     mapping(string => address[]) private workersByLocation;
     uint256 jobIdCounter;
 
-    event NewJobPosted(uint256 jobId, string title, uint256 salary, uint256 vacancies);
+    event NewJobPosted(
+        uint256 jobId,
+        string title,
+        uint256 salary,
+        uint256 vacancies
+    );
     event ApplicationSubmitted(address worker, uint256 jobId);
     event CompanyAdded(string companyName, address company);
     event WorkerAdded(address worker, string location);
 
-    constructor(){
+    constructor() {
         jobIdCounter = 0;
     }
 
     function addCompany(
-        string memory _companyName,
-        address _walletAddress
-    ) external{
-        require(companies[_walletAddress].walletAddress == address(0), "Company already exists");
+        address _walletAddress,
+        string memory _companyName
+    ) external {
+        require(
+            companies[_walletAddress].walletAddress == address(0),
+            "Company already exists"
+        );
         companies[_walletAddress] = Company(_companyName, _walletAddress);
         _grantRole(COMPANY_ROLE, _walletAddress);
         emit CompanyAdded(_companyName, _walletAddress);
     }
 
     function addWorker(
-        address _walletAddress, 
+        address _walletAddress,
         string memory _location
-    ) external{
-        require(workers[_walletAddress].walletAddress == address(0), "Company already exists");
+    ) external {
+        require(
+            workers[_walletAddress].walletAddress == address(0),
+            "Company already exists"
+        );
         Worker memory newWorker = Worker(_walletAddress, _location, false);
         workers[_walletAddress] = newWorker;
         workersByLocation[_location].push(_walletAddress);
@@ -75,54 +85,71 @@ contract WorkerCompanyMgmt is AccessControl{
         uint256 _salary,
         uint256 _vacancies
     ) external {
-        if(!hasRole(COMPANY_ROLE, msg.sender)){
+        if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
         }
         uint256 jobId = jobIdCounter;
         address companyAddress = msg.sender;
-        Job memory newJob = Job(jobId, _location, companyAddress, new address[](0), _salary, _vacancies);
+        Job memory newJob = Job(
+            jobId,
+            _location,
+            companyAddress,
+            new address[](0),
+            _salary,
+            _vacancies
+        );
         companyJobs[companyAddress][jobId] = newJob;
         jobs[jobId] = newJob;
         jobIdCounter++;
         emit NewJobPosted(jobId, _location, _salary, _vacancies);
     }
 
-    function getAllJobs() external view returns (Job[] memory){
+    function getAllJobs() external view returns (Job[] memory) {
         uint256 totalJobs = jobIdCounter;
-        
+
         Job[] memory allJobs = new Job[](totalJobs);
-        for(uint256 i = 0; i < totalJobs; i++){
+        for (uint256 i = 0; i < totalJobs; i++) {
             Job storage job = jobs[i];
             allJobs[i] = job;
         }
 
         return allJobs;
-    } 
+    }
 
     function applyForJob(uint256 _jobId) external {
-        if(!hasRole(WORKER_ROLE, msg.sender)){
+        if (!hasRole(WORKER_ROLE, msg.sender)) {
             revert CallerNotWorker(msg.sender);
         }
-        require(workers[msg.sender].isEmployed == false, "Worker is already employed");
+        require(
+            workers[msg.sender].isEmployed == false,
+            "Worker is already employed"
+        );
 
         address[] storage applicants = jobApplicants[_jobId];
         for (uint256 i = 0; i < applicants.length; i++) {
-            require(applicants[i] != msg.sender, "Worker has already applied for this job");
+            require(
+                applicants[i] != msg.sender,
+                "Worker has already applied for this job"
+            );
         }
 
-        jobApplicants[_jobId].push(msg.sender); 
+        jobApplicants[_jobId].push(msg.sender);
 
         emit ApplicationSubmitted(msg.sender, _jobId);
     }
 
-    function getAllApplicants(uint256 _jobId) external view returns (address[] memory) {
-        if(!hasRole(COMPANY_ROLE, msg.sender)){
+    function getAllApplicants(
+        uint256 _jobId
+    ) external view returns (address[] memory) {
+        if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
         }
         return jobApplicants[_jobId];
     }
 
-    function getWorkersByLocation(string memory _location) external view returns(Worker[] memory){
+    function getWorkersByLocation(
+        string memory _location
+    ) external view returns (Worker[] memory) {
         address[] memory workerAddresses = workersByLocation[_location];
         Worker[] memory result = new Worker[](workerAddresses.length);
 
@@ -132,5 +159,4 @@ contract WorkerCompanyMgmt is AccessControl{
 
         return result;
     }
-
 }
