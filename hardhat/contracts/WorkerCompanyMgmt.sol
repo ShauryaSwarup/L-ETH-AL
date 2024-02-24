@@ -47,6 +47,7 @@ contract WorkerCompanyMgmt is AccessControl {
     mapping(uint256 => mapping(string => address[]))
         private jobApplicantsByLocation;
     mapping(address => uint256) public workerJob;
+    mapping(uint256 => Worker[]) public jobWorkers;
     mapping(uint256 => Worker) public unemployedWorkers;
     mapping(address => uint256) public totalHoursWorked;
     mapping(address => Attendance) public attendanceRecords;
@@ -180,6 +181,10 @@ contract WorkerCompanyMgmt is AccessControl {
         return myJobs;
     }
 
+    function getEmployeesByJob(uint256 _jobId) external view returns(Worker[] memory){
+        return jobWorkers[_jobId];
+    }
+
     function applyForJob(uint256 _jobId) external {
         if (!hasRole(WORKER_ROLE, msg.sender)) {
             revert CallerNotWorker(msg.sender);
@@ -278,6 +283,7 @@ contract WorkerCompanyMgmt is AccessControl {
                 jobs[_jobId].employedWorkers.push(worker.walletAddress);
                 workers[worker.walletAddress].isEmployed = true;
                 workerJob[worker.walletAddress] = _jobId;
+                jobWorkers[_jobId].push(applicants[i]);
                 totalHoursWorked[worker.walletAddress] = 0;
                 vacancies--;
                 hiredCount++;
