@@ -1,8 +1,12 @@
+"use client";
+
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import Link from "next/link";
+import { useAccount } from "wagmi";
 
 export default function Navbar() {
+    const account = useAccount();
     return (
         <>
             <div className='navbar bg-base-100'>
@@ -47,7 +51,7 @@ export default function Navbar() {
                         href='/'
                         className='btn btn-ghost text-xl text-indigo-500 rounded-lg'
                     >
-                        deWork
+                        deWages
                     </Link>
                 </div>
                 <div className='navbar-center hidden lg:flex'>
@@ -60,6 +64,12 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link href='/nftlisting'>My NFTs</Link>
+                        </li>
+                        <li>
+                            <Link href='/myjobpostings'>My Jobs</Link>
+                        </li>
+                        <li>
+                            <Link href='/postnewjob'>Post a Job</Link>
                         </li>
                     </ul>
                 </div>

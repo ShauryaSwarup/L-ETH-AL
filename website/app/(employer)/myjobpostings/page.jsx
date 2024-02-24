@@ -1,9 +1,8 @@
-import React from 'react'
+import MyJobs from "@/components/MyJobs";
+import React from "react";
 
 function page() {
-  return (
-    <div></div>
-  )
+    return <MyJobs />;
 }
 
-export default page
+export default page;
