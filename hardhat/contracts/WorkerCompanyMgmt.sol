@@ -235,4 +235,27 @@ contract WorkerCompanyMgmt is AccessControl{
         totalHoursWorked[user][jobId] = totalHours;
     }
 
+    function isWorker(address _address) external view returns (bool) {
+        return hasRole(WORKER_ROLE, _address);
+    }
+
+    function isCompany(address _address) external view returns (bool) {
+        return hasRole(COMPANY_ROLE, _address);
+    }
+
+    function getJobsPostedByCompany(address _companyAddress) external view returns (Job[] memory) {
+        require(hasRole(COMPANY_ROLE, _companyAddress), "Caller is not a company");
+        uint256 totalJobs = jobIdCounter;
+        Job[] memory postedJobs = new Job[](totalJobs);
+        uint256 counter = 0;
+        for (uint256 i = 0; i < totalJobs; i++) {
+            Job storage job = jobs[i];
+            if (job.company == _companyAddress) {
+                postedJobs[counter] = job;
+                counter++;
+            }
+        }
+        return postedJobs;
+    }
+
 }
