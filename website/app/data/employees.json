@@ -1,0 +1,77 @@
+[
+	{
+		"name": "Aarav Sharma",
+		"walletAddress": "0x1234567890123456789012345678901234567890",
+		"isEmployed": true
+	},
+	{
+		"name": "Aaradhya Patel",
+		"walletAddress": "0xabcdef0123456789abcdef0123456789abcdef01",
+		"isEmployed": false
+	},
+	{
+		"name": "Advik Gupta",
+		"walletAddress": "0x9876543210987654321098765432109876543210",
+		"isEmployed": true
+	},
+	{
+		"name": "Ananya Singh",
+		"walletAddress": "0x8765432109876543210987654321098765432109",
+		"isEmployed": false
+	},
+	{
+		"name": "Aanya Kumar",
+		"walletAddress": "0x7654321098765432109876543210987654321098",
+		"isEmployed": true
+	},
+	{
+		"name": "Arnav Mishra",
+		"walletAddress": "0x6543210987654321098765432109876543210987",
+		"isEmployed": true
+	},
+	{
+		"name": "Anika Joshi",
+		"walletAddress": "0x5432109876543210987654321098765432109876",
+		"isEmployed": false
+	},
+	{
+		"name": "Ayushman Chauhan",
+		"walletAddress": "0x4321098765432109876543210987654321098765",
+		"isEmployed": true
+	},
+	{
+		"name": "Anvi Kapoor",
+		"walletAddress": "0x3210987654321098765432109876543210987654",
+		"isEmployed": true
+	},
+	{
+		"name": "Advait Tiwari",
+		"walletAddress": "0x2109876543210987654321098765432109876543",
+		"isEmployed": false
+	},
+	{
+		"name": "Aaditya Reddy",
+		"walletAddress": "0x1098765432109876543210987654321098765432",
+		"isEmployed": true
+	},
+	{
+		"name": "Anushka Sharma",
+		"walletAddress": "0x0987654321098765432109876543210987654321",
+		"isEmployed": false
+	},
+	{
+		"name": "Dhruv Verma",
+		"walletAddress": "0x00112233445566778899aabbccddeeff00112233",
+		"isEmployed": true
+	},
+	{
+		"name": "Ishaan Singh",
+		"walletAddress": "0xaabbccddeeff00112233445566778899aabbccdd",
+		"isEmployed": true
+	},
+	{
+		"name": "Vihaan Kumar",
+		"walletAddress": "0xbbaabbccddeeff00112233445566778899aabbcc",
+		"isEmployed": false
+	}
+]

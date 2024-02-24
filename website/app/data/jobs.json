@@ -1,0 +1,126 @@
+[
+	{
+		"jobId": 1,
+		"location": "Construction Site A",
+		"company": "ABC Construction Company",
+		"employedWorkers": [
+			"John Doe",
+			"Jane Smith",
+			"Michael Johnson",
+			"Emily Brown"
+		],
+		"salary": 100,
+		"vacancies": 3
+	},
+	{
+		"jobId": 2,
+		"location": "Farm",
+		"company": "XYZ Farming Co.",
+		"employedWorkers": ["Alice Johnson", "Robert Williams", "Sophia Martinez"],
+		"salary": 80,
+		"vacancies": 5
+	},
+	{
+		"jobId": 3,
+		"location": "Warehouse",
+		"company": "123 Storage Inc.",
+		"employedWorkers": [
+			"David Taylor",
+			"Olivia Anderson",
+			"James Wilson",
+			"Emma Thomas",
+			"Daniel Garcia",
+			"Ella Jackson"
+		],
+		"salary": 120,
+		"vacancies": 2
+	},
+	{
+		"jobId": 4,
+		"location": "Road Construction",
+		"company": "Roadway Builders Ltd.",
+		"employedWorkers": [
+			"William Brown",
+			"Ava White",
+			"Noah Harris",
+			"Sophia Clark"
+		],
+		"salary": 90,
+		"vacancies": 4
+	},
+	{
+		"jobId": 5,
+		"location": "Retail Store",
+		"company": "Happy Mart",
+		"employedWorkers": ["Liam Baker", "Charlotte Young"],
+		"salary": 110,
+		"vacancies": 7
+	},
+	{
+		"jobId": 6,
+		"location": "Restaurant",
+		"company": "Gourmet Dining",
+		"employedWorkers": [
+			"Benjamin Rodriguez",
+			"Mia Lewis",
+			"Ethan Walker",
+			"Harper Perez",
+			"Elijah Hall"
+		],
+		"salary": 95,
+		"vacancies": 3
+	},
+	{
+		"jobId": 7,
+		"location": "Cleaning Services",
+		"company": "Sparkle Cleaners",
+		"employedWorkers": ["Mason Scott", "Avery Green", "Abigail King"],
+		"salary": 85,
+		"vacancies": 6
+	},
+	{
+		"jobId": 8,
+		"location": "Delivery",
+		"company": "Fast Courier Inc.",
+		"employedWorkers": [
+			"Logan Evans",
+			"Sofia Hill",
+			"Jackson Adams",
+			"Madison Baker",
+			"Lucas Morris",
+			"Aria Rogers",
+			"Alexander Ward"
+		],
+		"salary": 100,
+		"vacancies": 4
+	},
+	{
+		"jobId": 9,
+		"location": "Landscaping",
+		"company": "Green Thumb Landscapers",
+		"employedWorkers": [
+			"Scarlett Cooper",
+			"Leo Flores",
+			"Grace Long",
+			"Carter Reed",
+			"Layla Morgan",
+			"Sebastian Cox",
+			"Zoey Hughes"
+		],
+		"salary": 105,
+		"vacancies": 2
+	},
+	{
+		"jobId": 10,
+		"location": "Event Setup",
+		"company": "Elite Events Inc.",
+		"employedWorkers": [
+			"Axel Price",
+			"Aurora Wood",
+			"Gabriel Richardson",
+			"Luna Foster"
+		],
+		"salary": 115,
+		"vacancies": 3
+	}
+]
