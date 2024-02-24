@@ -23,7 +23,7 @@ contract WorkerCompanyMgmt is AccessControl {
     }
 
     struct Job {
-        string comapnyName;
+        string companyName;
         uint256 jobId;
         string location;
         address company;
@@ -187,6 +187,15 @@ contract WorkerCompanyMgmt is AccessControl {
     
     function getJobById(uint256 _jobId) external view returns (Job memory) {
         return jobs[_jobId];
+    }
+
+    function getCurrentJob() external view returns(Job memory){
+        uint256 jobId = workerJob[msg.sender];
+        return jobs[jobId];
+    }
+
+    function getWorkerFromAddress() external view returns(Worker memory){
+        return workers[msg.sender];
     }
 
     function applyForJob(uint256 _jobId) external {
@@ -355,8 +364,21 @@ contract WorkerCompanyMgmt is AccessControl {
         
         attendanceRecords[msg.sender].checkOutTime = block.timestamp;
         Attendance memory attendance = attendanceRecords[msg.sender];
-        totalHoursWorked[msg.sender] = attendance.checkOutTime - attendance.checkInTime;
+        totalHoursWorked[msg.sender] += attendance.checkOutTime - attendance.checkInTime;
         
         emit WorkerCheckedOut(attendanceRecords[msg.sender].jobId, msg.sender, block.timestamp);
     }
+
+    /* function pay(uint256 _jobId) external {
+        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
+        require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
+
+        Attendance memory attendance = attendanceRecords[msg.sender];
+        uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
+
+        Job memory job = jobs[_jobId];
+
+        uint256 amount = hoursWorked * job.salary;
+        require(job.company.balance >= amount, "Insufficient balance in the contract");        
+    } */
 }

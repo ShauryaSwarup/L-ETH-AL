@@ -103,6 +103,22 @@ describe("WorkerCompanyMgmt Test", function () {
     
   })
 
+  it("Should Return the Current Job", async function(){
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    await workerCompanyMgmt.applyForJob(0);
+
+    await workerCompanyMgmt.hire(0);
+    expect((await workerCompanyMgmt.getCurrentJob()).jobId).to.equal(0);
+  })
+
+  it("Should Return Worker Using the Address", async function(){
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    expect((await workerCompanyMgmt.getWorkerFromAddress()).location).to.equal("Vasant Vihar");
+  })
+
   it("Should Return All Employed Workers for a Job", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
     await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
