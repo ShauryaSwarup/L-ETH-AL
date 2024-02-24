@@ -29,7 +29,7 @@ const { wallets } = getDefaultWallets();
 
 const config = getDefaultConfig({
 	appName: "RainbowKit demo",
-	projectId: "YOUR_PROJECT_ID",
+	projectId: "3fbb6bba6f1de962d911bb5b5c9dba88",
 	wallets: [
 		...wallets,
 		{
@@ -48,7 +48,7 @@ const config = getDefaultConfig({
 		base,
 		zora,
 	],
-	ssr: true,
+	ssr: true
 });
 
 const queryClient = new QueryClient();
