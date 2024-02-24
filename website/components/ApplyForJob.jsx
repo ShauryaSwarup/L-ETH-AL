@@ -2,14 +2,11 @@ import React from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { WCM } from "@/contracts/WCM";
 
-function ApplyForJob({ job, account }) {
+function ApplyForJob({ job }) {
 	const { data: hash, error, isPending, writeContract } = useWriteContract();
 
 	function submit(e) {
 		e.preventDefault(); // Prevent default form submission behavior
-
-		console.log(account.address);
-
 		writeContract({
 			address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 			abi: WCM.abi,

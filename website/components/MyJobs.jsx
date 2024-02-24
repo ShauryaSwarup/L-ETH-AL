@@ -11,6 +11,7 @@ export default function MyJobs() {
         error,
         isPending,
     } = useReadContract({
+        account: address,
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         abi: WCM.abi,
         functionName: "getMyJobs",
@@ -50,7 +51,9 @@ export default function MyJobs() {
                                     {/* <p>{`Workers Employed: ${job.employedWorkers.join(', ')}`}</p> */}
                                     <p>{`Salary: $${job.salary} per day`}</p>
                                     <p>{`Vacancies: ${job.vacancies}`}</p>
-                                    <Link href={`/employeelisting/${job.jobId}`}>
+                                    <Link
+                                        href={`/employeelisting/${job.jobId}`}
+                                    >
                                         <button className='btn rounded-xl'>
                                             Check Applications
                                         </button>
