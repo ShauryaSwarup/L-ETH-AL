@@ -33,7 +33,7 @@ export default function MyJobs() {
 			</div>
 		);
 
-	console.log("Hired", jobs[0].employedWorkers);
+	// console.log("Hired", jobs[0].employedWorkers);
 
 	return (
 		<div>
@@ -49,11 +49,18 @@ export default function MyJobs() {
 									{/* <p>{`Workers Employed: ${job.employedWorkers.join(', ')}`}</p> */}
 									<p>{`Salary: $${job.salary} per day`}</p>
 									<p>{`Vacancies: ${job.vacancies}`}</p>
-									<Link href={`/employeelisting/${job.jobId}`}>
-										<button className="btn rounded-xl">
-											Check Applications
-										</button>
-									</Link>
+									<div className="flex gap-3">
+										<Link href={`/employeelisting/${job.jobId}`}>
+											<button className="btn rounded-xl">
+												Check Applications
+											</button>
+										</Link>
+										<Link href={`/attendance/${job.jobId}`}>
+											<button className="btn rounded-xl">
+												Checkin/Checkout
+											</button>
+										</Link>
+									</div>
 								</div>
 							</div>
 						</div>
