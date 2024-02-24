@@ -46,7 +46,7 @@ describe("WorkerCompanyMgmt Test", function () {
     
     await workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 10);
     await workerCompanyMgmt.postJob("Mumbai", ethers.parseEther("0.02"), 20);
-    
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     const allJobs = await workerCompanyMgmt.getAllJobs();
     
     expect(allJobs.length).to.equal(2);
@@ -68,17 +68,21 @@ describe("WorkerCompanyMgmt Test", function () {
     await expect(workerCompanyMgmt.applyForJob(0)).to.be.revertedWith("Worker has already applied for this job");
   })
 
-  it("Should Return Workers by Location", async function(){
+  it("Should Hire Workers", async function(){
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
-    await workerCompanyMgmt.addWorker(addr1, "Vasant Vihar");
-    await workerCompanyMgmt.addWorker(addr2, "Manpada");
+    await workerCompanyMgmt.applyForJob(0);
 
-    const workersByLocation = await workerCompanyMgmt.getWorkersByLocation("Vasant Vihar");
-    expect(workersByLocation).to.have.lengthOf(2);
+    await workerCompanyMgmt.hire(0);
 
-    expect(workersByLocation[0].location).to.equal("Vasant Vihar");
-    expect(workersByLocation[1].location).to.equal("Vasant Vihar");
-
+    const worker = await workerCompanyMgmt.workers(owner);
+    expect(worker.isEmployed).to.be.true;
+    expect(await workerCompanyMgmt.workerJob(owner)).to.equal(0);
+    const job = await workerCompanyMgmt.jobs(0);
+    expect(job.vacancies).to.equal(9);
+    
   })
 
 })
