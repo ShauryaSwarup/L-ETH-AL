@@ -3,30 +3,33 @@ pragma solidity ^0.8.7;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract WorkerCompanyMgmt is AccessControl {
+contract WorkerCompanyMgmt is AccessControl{
+    
     bytes32 public constant COMPANY_ROLE = keccak256("COMPANY_ROLE");
     bytes32 public constant WORKER_ROLE = keccak256("WORKER_ROLE");
 
     error CallerNotCompany(address caller);
     error CallerNotWorker(address caller);
 
-    struct Company {
+    struct Company{
         string companyName;
         address walletAddress;
     }
 
-    struct Worker {
+    struct Worker{
+        uint256 workerId;
         address walletAddress;
         string location;
         bool isEmployed;
     }
 
-    struct Job {
+    struct Job{
+        string comapnyName;
         uint256 jobId;
         string location;
         address company;
         address[] employedWorkers;
-        uint256 salary;
+        uint256 salary;   
         uint256 vacancies;
     }
 
@@ -47,15 +50,13 @@ contract WorkerCompanyMgmt is AccessControl {
     mapping(address => mapping(uint256 => uint256)) public daysAttended;
     mapping(address => mapping(uint256 => uint256)) public totalHoursWorked;
     mapping(address => uint256) public workerJob;
+    mapping(uint256 => Worker) public unemployedWorkers;
 
     uint256 jobIdCounter;
+    uint256 workerIdCounter;
+    uint256 public totalUnemployedWorkers;
 
-    event NewJobPosted(
-        uint256 jobId,
-        string title,
-        uint256 salary,
-        uint256 vacancies
-    );
+    event NewJobPosted(uint256 jobId, string title, uint256 salary, uint256 vacancies);
     event ApplicationSubmitted(address worker, uint256 jobId);
     event CompanyAdded(string companyName, address company);
     event WorkerAdded(address worker, string location);
@@ -70,35 +71,59 @@ contract WorkerCompanyMgmt is AccessControl {
         uint256 checkOutTime
     );
 
-    constructor() {
+    constructor(){
         jobIdCounter = 0;
+        workerIdCounter = 0;
+        totalUnemployedWorkers = 0;
     }
 
     function addCompany(
         string memory _companyName,
         address _walletAddress
+<<<<<<< HEAD
     ) external {
         require(
             companies[_walletAddress].walletAddress == address(0),
             "Company already exists"
         );
+=======
+    ) external{
+        require(companies[_walletAddress].walletAddress == address(0), "Company already exists");
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         companies[_walletAddress] = Company(_companyName, _walletAddress);
         _grantRole(COMPANY_ROLE, _walletAddress);
         emit CompanyAdded(_companyName, _walletAddress);
     }
 
     function addWorker(
-        address _walletAddress,
+        address _walletAddress, 
         string memory _location
+<<<<<<< HEAD
     ) external {
         require(
             workers[_walletAddress].walletAddress == address(0),
             "Worker already exists"
         );
         Worker memory newWorker = Worker(_walletAddress, _location, false);
+=======
+    ) external{
+        require(workers[_walletAddress].walletAddress == address(0), "Worker already exists");
+        Worker memory newWorker = Worker(workerIdCounter, _walletAddress, _location, false);
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         workers[_walletAddress] = newWorker;
+        unemployedWorkers[workerIdCounter] = newWorker;
+        totalUnemployedWorkers++;
+        workerIdCounter++;
         _grantRole(WORKER_ROLE, _walletAddress);
         emit WorkerAdded(_walletAddress, _location);
+    }
+
+    function isWorker() external view returns(bool){
+        return hasRole(WORKER_ROLE, msg.sender);
+    }
+
+    function isCompany() external view returns(bool){
+        return hasRole(COMPANY_ROLE, msg.sender);
     }
 
     function postJob(
@@ -106,36 +131,37 @@ contract WorkerCompanyMgmt is AccessControl {
         uint256 _salary,
         uint256 _vacancies
     ) external {
-        if (!hasRole(COMPANY_ROLE, msg.sender)) {
+        if(!hasRole(COMPANY_ROLE, msg.sender)){
             revert CallerNotCompany(msg.sender);
         }
         uint256 jobId = jobIdCounter;
-        address companyAddress = msg.sender;
-        Job memory newJob = Job(
-            jobId,
-            _location,
-            companyAddress,
-            new address[](0),
-            _salary,
-            _vacancies
-        );
-        companyJobs[companyAddress][jobId] = newJob;
+        Company memory company = companies[msg.sender];
+        string memory companyName = company.companyName;
+        Job memory newJob = Job(companyName, jobId, _location, msg.sender, new address[](0), _salary, _vacancies);
+        companyJobs[msg.sender][jobId] = newJob;
         jobs[jobId] = newJob;
         jobIdCounter++;
         emit NewJobPosted(jobId, _location, _salary, _vacancies);
     }
 
+<<<<<<< HEAD
     function getAllJobs() external view returns (Job[] memory) {
+=======
+    function getAllJobs() external view returns (Job[] memory){
+        if(!hasRole(WORKER_ROLE, msg.sender)){
+            revert CallerNotWorker(msg.sender);
+        }
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         uint256 totalJobs = jobIdCounter;
-
+        
         Job[] memory allJobs = new Job[](totalJobs);
-        for (uint256 i = 0; i < totalJobs; i++) {
+        for(uint256 i = 0; i < totalJobs; i++){
             Job storage job = jobs[i];
             allJobs[i] = job;
         }
 
         return allJobs;
-    }
+    } 
 
     function getMyJobs(address _company) external view returns (Job[] memory) {
         uint256 totalJobs = jobIdCounter;
@@ -164,34 +190,38 @@ contract WorkerCompanyMgmt is AccessControl {
     }
 
     function applyForJob(uint256 _jobId) external {
-        if (!hasRole(WORKER_ROLE, msg.sender)) {
+        if(!hasRole(WORKER_ROLE, msg.sender)){
             revert CallerNotWorker(msg.sender);
         }
-        require(
-            workers[msg.sender].isEmployed == false,
-            "Worker is already employed"
-        );
+        require(workers[msg.sender].isEmployed == false, "Worker is already employed");
 
         address[] storage applicants = jobApplicants[_jobId];
         for (uint256 i = 0; i < applicants.length; i++) {
-            require(
-                applicants[i] != msg.sender,
-                "Worker has already applied for this job"
-            );
+            require(applicants[i] != msg.sender, "Worker has already applied for this job");
         }
 
+<<<<<<< HEAD
         jobApplicants[_jobId].push(msg.sender);
         jobApplicantsByLocation[_jobId][workers[msg.sender].location].push(
             msg.sender
         );
+=======
+        jobApplicants[_jobId].push(msg.sender); 
+        jobApplicantsByLocation[_jobId][workers[msg.sender].location].push(msg.sender);
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
 
         emit ApplicationSubmitted(msg.sender, _jobId);
     }
 
+<<<<<<< HEAD
     function getAllApplicants(
         uint256 _jobId
     ) external view returns (Worker[] memory) {
         if (!hasRole(COMPANY_ROLE, msg.sender)) {
+=======
+    function getAllApplicants(uint256 _jobId) external view returns (address[] memory) {
+        if(!hasRole(COMPANY_ROLE, msg.sender)){
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
             revert CallerNotCompany(msg.sender);
         }
         address[] memory workerAddresses = jobApplicants[_jobId];
@@ -202,6 +232,7 @@ contract WorkerCompanyMgmt is AccessControl {
         return result;
     }
 
+<<<<<<< HEAD
     function getApplicantsByLocation(
         uint256 _jobId,
         string memory _location
@@ -212,6 +243,23 @@ contract WorkerCompanyMgmt is AccessControl {
         address[] memory workerAddresses = jobApplicantsByLocation[_jobId][
             _location
         ];
+=======
+    function getAllUnemployedWorkers() external view returns(Worker[] memory) {
+        Worker[] memory unemployedWorkersArray = new Worker[](totalUnemployedWorkers);
+        
+        for(uint256 i = 0; i < totalUnemployedWorkers; i++){
+            unemployedWorkersArray[i] = unemployedWorkers[i];
+        }
+
+        return unemployedWorkersArray;    
+    }
+
+    function getApplicantsByLocation(uint256 _jobId, string memory _location) internal view returns(Worker[] memory){
+        if(!hasRole(COMPANY_ROLE, msg.sender)){
+            revert CallerNotCompany(msg.sender);
+        }
+        address[] memory workerAddresses = jobApplicantsByLocation[_jobId][_location];
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         Worker[] memory result = new Worker[](workerAddresses.length);
 
         for (uint256 i = 0; i < workerAddresses.length; i++) {
@@ -248,6 +296,8 @@ contract WorkerCompanyMgmt is AccessControl {
                 workerJob[worker.walletAddress] = _jobId;
                 vacancies--;
                 hiredCount++;
+                totalUnemployedWorkers--;
+                delete unemployedWorkers[applicants[i].workerId];
             }
         }
 
@@ -280,7 +330,7 @@ contract WorkerCompanyMgmt is AccessControl {
     }
 
     function checkIn(uint256 jobId) external {
-        require(jobId > 0 && jobId <= jobIdCounter, "Invalid job ID");
+        require(jobId >= 0 && jobId <= jobIdCounter, "Invalid job ID");
         require(workerJob[msg.sender] == jobId, "Not employed for this job");
 
         Attendance[] storage userAttendance = attendanceRecords[msg.sender][
@@ -329,4 +379,9 @@ contract WorkerCompanyMgmt is AccessControl {
         daysAttended[user][jobId] = attendedDays;
         totalHoursWorked[user][jobId] = totalHours;
     }
+<<<<<<< HEAD
 }
+=======
+
+}
+>>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f

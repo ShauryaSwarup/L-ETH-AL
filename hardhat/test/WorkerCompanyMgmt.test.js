@@ -25,16 +25,20 @@ describe("WorkerCompanyMgmt Test", function () {
 		expect(company.walletAddress).to.equal(walletAddress);
 	});
 
-	it("Should Post Two Jobs", async function () {
-		const companyName = "Kalpataru";
-		const walletAddress = ethers.getAddress(
-			"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-		);
-		workerCompanyMgmt.addCompany(companyName, walletAddress);
+  it("Should Return Whether Caller is a Company", async function(){
+    expect(await workerCompanyMgmt.isCompany()).to.equal(false);
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    expect(await workerCompanyMgmt.isCompany()).to.equal(true);
+  })
 
-		const location = "Thane";
-		const salary = ethers.parseEther("0.01");
-		const vacancies = 10;
+  it("Should Post Two Jobs", async function(){
+    const companyName = "Kalpataru";
+    const walletAddress = ethers.getAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+    workerCompanyMgmt.addCompany(companyName, walletAddress)
+    
+    const location = "Thane";
+    const salary = ethers.parseEther("0.01");
+    const vacancies = 10;
 
 		await expect(workerCompanyMgmt.postJob(location, salary, vacancies))
 			.to.emit(workerCompanyMgmt, "NewJobPosted")
@@ -74,35 +78,55 @@ describe("WorkerCompanyMgmt Test", function () {
 		expect(allJobs[1].vacancies).to.equal(20);
 	});
 
-	it("Should Apply for a Job", async function () {
-		await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
-		workerCompanyMgmt.addCompany("Kalpataru", owner);
-		workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 20);
-		await expect(workerCompanyMgmt.applyForJob(0))
-			.to.emit(workerCompanyMgmt, "ApplicationSubmitted")
-			.withArgs(owner, 0);
-		await expect(workerCompanyMgmt.applyForJob(0)).to.be.revertedWith(
-			"Worker has already applied for this job"
-		);
-	});
+  it("Should Apply for a Job", async function(){
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    workerCompanyMgmt.addCompany("Kalpataru", owner);
+    workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 20);
+    await expect(workerCompanyMgmt.applyForJob(0)).to.emit(workerCompanyMgmt, "ApplicationSubmitted").withArgs(owner, 0);
+    await expect(workerCompanyMgmt.applyForJob(0)).to.be.revertedWith("Worker has already applied for this job");
+  })
 
-	it("Should Hire Workers", async function () {
-		await workerCompanyMgmt.addCompany("Kalpataru", owner);
-		await workerCompanyMgmt.postJob(
-			"Vasant Vihar",
-			ethers.parseEther("0.01"),
-			10
-		);
+  it("Should Hire Workers", async function(){
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
 
-		await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
-		await workerCompanyMgmt.applyForJob(0);
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    await workerCompanyMgmt.applyForJob(0);
 
-		await workerCompanyMgmt.hire(0);
+    await workerCompanyMgmt.hire(0);
 
-		const worker = await workerCompanyMgmt.workers(owner);
-		expect(worker.isEmployed).to.be.true;
-		expect(await workerCompanyMgmt.workerJob(owner)).to.equal(0);
-		const job = await workerCompanyMgmt.jobs(0);
-		expect(job.vacancies).to.equal(9);
-	});
-});
+    const worker = await workerCompanyMgmt.workers(owner);
+    expect(worker.isEmployed).to.be.true;
+    expect(await workerCompanyMgmt.workerJob(owner)).to.equal(0);
+    const job = await workerCompanyMgmt.jobs(0);
+    expect(job.vacancies).to.equal(9);
+    
+  })
+
+  it("Should Return All Unemployed Workers", async function(){
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    await workerCompanyMgmt.addWorker(addr2, "Manpada");
+    await workerCompanyMgmt.addWorker(addr1, "Manpada");
+    await workerCompanyMgmt.applyForJob(0);
+    await workerCompanyMgmt.hire(0);
+
+    const unemployedWorkers = await workerCompanyMgmt.getAllUnemployedWorkers();
+    expect(unemployedWorkers).to.have.lengthOf(2);
+  })
+
+  /* it("Should Check In Worker", async function(){
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    await workerCompanyMgmt.applyForJob(0);
+
+    await workerCompanyMgmt.hire(0);
+
+    await workerCompanyMgmt.checkIn(0);
+  }) */
+
+})
