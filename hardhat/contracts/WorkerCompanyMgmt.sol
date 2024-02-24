@@ -304,7 +304,7 @@ contract WorkerCompanyMgmt is AccessControl {
                 jobs[_jobId].employedWorkers.push(worker.walletAddress);
                 workers[worker.walletAddress].isEmployed = true;
                 workerJob[worker.walletAddress] = _jobId;
-                jobWorkers[_jobId].push(applicants[i]);
+                jobWorkers[_jobId].push(workers[worker.walletAddress]);
                 totalHoursWorked[worker.walletAddress] = 0;
                 vacancies--;
                 hiredCount++;
