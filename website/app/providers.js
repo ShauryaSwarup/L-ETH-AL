@@ -21,6 +21,7 @@ import {
 	polygonMumbai,
 	sepolia,
 	zora,
+	localhost,
 } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -47,8 +48,9 @@ const config = getDefaultConfig({
 		arbitrum,
 		base,
 		zora,
+		localhost,
 	],
-	ssr: true
+	ssr: true,
 });
 
 const queryClient = new QueryClient();

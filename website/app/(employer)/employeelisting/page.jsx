@@ -1,5 +1,5 @@
 import React from "react";
-import workers from "../../data/employees.json";
+import GetAllApplicants from "@/components/GetAllApplicants";
 
 const WorkerCard = ({ worker }) => {
 	return (
@@ -19,13 +19,7 @@ const WorkerCard = ({ worker }) => {
 };
 
 const pages = () => {
-	return (
-		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 gap-4 m-5">
-			{workers.map((worker) => (
-				<WorkerCard key={worker.walletAddress} worker={worker} />
-			))}
-		</div>
-	);
+	return <GetAllApplicants />;
 };
 
 export default pages;
