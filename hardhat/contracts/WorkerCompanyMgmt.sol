@@ -17,12 +17,14 @@ contract WorkerCompanyMgmt is AccessControl{
     }
 
     struct Worker{
+        uint256 workerId;
         address walletAddress;
         string location;
         bool isEmployed;
     }
 
     struct Job{
+        string comapnyName;
         uint256 jobId;
         string location;
         address company;
@@ -46,8 +48,11 @@ contract WorkerCompanyMgmt is AccessControl{
     mapping(address => mapping(uint256 => uint256)) public daysAttended;
     mapping(address => mapping(uint256 => uint256)) public totalHoursWorked;
     mapping(address => uint256) public workerJob;
+    mapping(uint256 => Worker) public unemployedWorkers;
 
     uint256 jobIdCounter;
+    uint256 workerIdCounter;
+    uint256 public totalUnemployedWorkers;
 
     event NewJobPosted(uint256 jobId, string title, uint256 salary, uint256 vacancies);
     event ApplicationSubmitted(address worker, uint256 jobId);
@@ -58,6 +63,8 @@ contract WorkerCompanyMgmt is AccessControl{
 
     constructor(){
         jobIdCounter = 0;
+        workerIdCounter = 0;
+        totalUnemployedWorkers = 0;
     }
 
     function addCompany(
@@ -74,11 +81,22 @@ contract WorkerCompanyMgmt is AccessControl{
         address _walletAddress, 
         string memory _location
     ) external{
-        require(workers[_walletAddress].walletAddress == address(0), "Company already exists");
-        Worker memory newWorker = Worker(_walletAddress, _location, false);
+        require(workers[_walletAddress].walletAddress == address(0), "Worker already exists");
+        Worker memory newWorker = Worker(workerIdCounter, _walletAddress, _location, false);
         workers[_walletAddress] = newWorker;
+        unemployedWorkers[workerIdCounter] = newWorker;
+        totalUnemployedWorkers++;
+        workerIdCounter++;
         _grantRole(WORKER_ROLE, _walletAddress);
         emit WorkerAdded(_walletAddress, _location);
+    }
+
+    function isWorker() external view returns(bool){
+        return hasRole(WORKER_ROLE, msg.sender);
+    }
+
+    function isCompany() external view returns(bool){
+        return hasRole(COMPANY_ROLE, msg.sender);
     }
 
     function postJob(
@@ -90,9 +108,10 @@ contract WorkerCompanyMgmt is AccessControl{
             revert CallerNotCompany(msg.sender);
         }
         uint256 jobId = jobIdCounter;
-        address companyAddress = msg.sender;
-        Job memory newJob = Job(jobId, _location, companyAddress, new address[](0), _salary, _vacancies);
-        companyJobs[companyAddress][jobId] = newJob;
+        Company memory company = companies[msg.sender];
+        string memory companyName = company.companyName;
+        Job memory newJob = Job(companyName, jobId, _location, msg.sender, new address[](0), _salary, _vacancies);
+        companyJobs[msg.sender][jobId] = newJob;
         jobs[jobId] = newJob;
         jobIdCounter++;
         emit NewJobPosted(jobId, _location, _salary, _vacancies);
@@ -137,6 +156,16 @@ contract WorkerCompanyMgmt is AccessControl{
         return jobApplicants[_jobId];
     }
 
+    function getAllUnemployedWorkers() external view returns(Worker[] memory) {
+        Worker[] memory unemployedWorkersArray = new Worker[](totalUnemployedWorkers);
+        
+        for(uint256 i = 0; i < totalUnemployedWorkers; i++){
+            unemployedWorkersArray[i] = unemployedWorkers[i];
+        }
+
+        return unemployedWorkersArray;    
+    }
+
     function getApplicantsByLocation(uint256 _jobId, string memory _location) internal view returns(Worker[] memory){
         if(!hasRole(COMPANY_ROLE, msg.sender)){
             revert CallerNotCompany(msg.sender);
@@ -170,6 +199,8 @@ contract WorkerCompanyMgmt is AccessControl{
                 workerJob[applicants[i].walletAddress] = _jobId;
                 vacancies--;
                 hiredCount++;
+                totalUnemployedWorkers--;
+                delete unemployedWorkers[applicants[i].workerId];
             }
         }
 
@@ -196,7 +227,7 @@ contract WorkerCompanyMgmt is AccessControl{
     }
 
     function checkIn(uint256 jobId) external {
-        require(jobId > 0 && jobId <= jobIdCounter, "Invalid job ID");
+        require(jobId >= 0 && jobId <= jobIdCounter, "Invalid job ID");
         require(workerJob[msg.sender] == jobId, "Not employed for this job");
 
         Attendance[] storage userAttendance = attendanceRecords[msg.sender][jobId];
