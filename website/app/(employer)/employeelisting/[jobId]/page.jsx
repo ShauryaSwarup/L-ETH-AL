@@ -1,8 +1,7 @@
-import React from "react";
 import GetAllApplicants from "@/components/GetAllApplicants";
 
 const EmployeeListing = ({ params }) => {
-    const jobId = params.slug;
+    const jobId = params.jobId;
     console.log(jobId);
     return (
         <>

@@ -264,6 +264,18 @@ contract WorkerCompanyMgmt is AccessControl {
         return result;
     }
 
+    function getAllApplicants2(uint256 _jobId) internal view returns(Worker[] memory){
+       if (!hasRole(COMPANY_ROLE, msg.sender)) {
+            revert CallerNotCompany(msg.sender);
+        }
+        address[] memory workerAddresses = jobApplicants[_jobId];
+        Worker[] memory result = new Worker[](workerAddresses.length);
+        for(uint i=0;i<workerAddresses.length;i++){
+            result[i]=workers[workerAddresses[i]];
+        }
+        return result;
+    }
+
     function hire(uint256 _jobId) external {
         if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
@@ -279,7 +291,7 @@ contract WorkerCompanyMgmt is AccessControl {
         );
         require(vacancies > 0, "No vacancies available for this job");
 
-        Worker[] memory applicants = getApplicantsByLocation(_jobId, _location);
+        Worker[] memory applicants = getAllApplicants2(_jobId);
 
         uint256 hiredCount = 0;
         for (

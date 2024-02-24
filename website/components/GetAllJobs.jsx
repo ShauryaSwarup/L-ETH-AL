@@ -1,15 +1,17 @@
 "use client";
 import React from "react";
-import { BaseError, useReadContract } from "wagmi";
+import { BaseError, useAccount, useReadContract } from "wagmi";
 import { WCM } from "@/contracts/WCM";
 import ApplyForJob from "./ApplyForJob";
 
-function GetAllJobs({ account }) {
+function GetAllJobs() {
+	const {address} = useAccount();
 	const {
 		data: jobs,
 		error,
 		isPending,
 	} = useReadContract({
+		account: address,
 		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 		abi: WCM.abi,
 		functionName: "getAllJobs",
@@ -38,7 +40,7 @@ function GetAllJobs({ account }) {
 			<h2>All Jobs</h2>
 			<ul>
 				{jobs.map((job) => (
-					<ApplyForJob job={job} account={account} />
+					<ApplyForJob job={job} />
 				))}
 			</ul>
 		</div>

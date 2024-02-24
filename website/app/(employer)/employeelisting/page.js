@@ -1,4 +1,10 @@
+import GetAllUnemployed from "@/components/GetAllUnemployed";
+
 function EmployeeListing() {
-    return <div>Employee Listing</div>;
+    return (
+        <>
+            <GetAllUnemployed />
+        </>
+    );
 }
 export default EmployeeListing;
