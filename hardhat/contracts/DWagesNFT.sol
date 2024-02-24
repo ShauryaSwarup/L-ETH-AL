@@ -8,19 +8,19 @@ import "hardhat/console.sol";
 
 contract DWagesNFT is ERC721Burnable {
     uint256 private _tokenIds;
-    uint256 private _itemsSold;
+    uint256 private _itemsAssigned;
 
     uint256 listingPrice = 0.025 ether;
     address payable owner;
 
-    mapping(uint256 => MarketToken) private idToMarketToken;
+    mapping(uint256 => MarketToken) public idToMarketToken;
 
     struct MarketToken {
         uint256 tokenId;
         address payable seller;
         address payable owner;
         uint256 price;
-        bool sold;
+        bool burnt;
     }
 
     event MarketTokenCreated(
@@ -28,8 +28,9 @@ contract DWagesNFT is ERC721Burnable {
         address seller,
         address owner,
         uint256 price,
-        bool sold
+        bool burnt
     );
+    event Redeemed(uint256 tokenId, address owner);
 
     constructor() ERC721("dWages Tokens", "DWT") {
         owner = payable(msg.sender);
@@ -51,11 +52,10 @@ contract DWagesNFT is ERC721Burnable {
 
     /* Mints a token and lists it in the marketplace */
     function companyMints(uint256 price) public payable returns (uint) {
-        _tokenIds++;
         uint256 newTokenId = _tokenIds;
-
         _mint(msg.sender, newTokenId);
         createMarketToken(newTokenId, price);
+        _tokenIds++;
         return newTokenId;
     }
 
@@ -65,7 +65,6 @@ contract DWagesNFT is ERC721Burnable {
             msg.value == listingPrice,
             "Price must be equal to listing price"
         );
-
         idToMarketToken[tokenId] = MarketToken(
             tokenId,
             payable(msg.sender),
@@ -95,6 +94,14 @@ contract DWagesNFT is ERC721Burnable {
             "Price must be equal to listing price"
         );
         burn(tokenId);
+        idToMarketToken[tokenId] = MarketToken(
+            tokenId,
+            payable(address(0)),
+            payable(address(0)),
+            0,
+            true
+        );
+        emit Redeemed(tokenId, address(0));
     }
 
     /* Creates the sale of a marketplace item */
@@ -107,9 +114,8 @@ contract DWagesNFT is ERC721Burnable {
             "Please submit the asking price in order to complete the purchase"
         );
         idToMarketToken[tokenId].owner = payable(msg.sender);
-        idToMarketToken[tokenId].sold = true;
         idToMarketToken[tokenId].seller = payable(address(0));
-        _itemsSold++;
+        _itemsAssigned++;
         _transfer(address(this), msg.sender, tokenId);
         payable(owner).transfer(listingPrice);
         payable(seller).transfer(msg.value);
@@ -118,13 +124,13 @@ contract DWagesNFT is ERC721Burnable {
     /* Returns all unsold market items */
     function fetchUnsoldTokens() public view returns (MarketToken[] memory) {
         uint itemCount = _tokenIds;
-        uint unsoldItemCount = _tokenIds - _itemsSold;
+        uint availableItemCount = _tokenIds - _itemsAssigned;
         uint currentIndex = 0;
 
-        MarketToken[] memory tokens = new MarketToken[](unsoldItemCount);
+        MarketToken[] memory tokens = new MarketToken[](availableItemCount);
         for (uint i = 0; i < itemCount; i++) {
-            if (idToMarketToken[i + 1].owner == address(this)) {
-                uint currentId = i + 1;
+            if (idToMarketToken[i].owner == address(this)) {
+                uint currentId = i;
                 MarketToken storage currentItem = idToMarketToken[currentId];
                 tokens[currentIndex] = currentItem;
                 currentIndex += 1;

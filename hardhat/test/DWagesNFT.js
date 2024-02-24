@@ -13,12 +13,11 @@ describe("DWagesNFT Test", function () {
     it("Should mint and list a token", async function () {
         const price = ethers.parseEther("0.1");
         const listingPrice = await dwagesNFT.getListingPrice(); // Fetching listing price
-        console.log(price);
-        await expect(dwagesNFT.companyMints(listingPrice))
+        await expect(dwagesNFT.companyMints(price, { value: listingPrice }))
             .to.emit(dwagesNFT, "MarketTokenCreated")
-            .withArgs(1, owner.address, dwagesNFT.address, price, false);
+            .withArgs(0, owner.address, dwagesNFT.target, price, false);
 
-        const listedToken = await dwagesNFT.idToMarketToken(1);
+        const listedToken = await dwagesNFT.idToMarketToken(0);
         expect(listedToken.price).to.equal(price);
     });
 
@@ -33,11 +32,11 @@ describe("DWagesNFT Test", function () {
     it("Should allow redemption of a token", async function () {
         const price = ethers.parseEther("0.1");
         const listingPrice = await dwagesNFT.getListingPrice(); // Fetching listing price
-        await dwagesNFT.companyMints(price);
+        await dwagesNFT.companyMints(price, { value: listingPrice });
 
         await expect(dwagesNFT.redeemToken(1))
-            .to.emit(dwagesNFT, "Transfer")
-            .withArgs(owner.address, ethers.constants.AddressZero, 1);
+            .to.emit(dwagesNFT, "Redeemed")
+            .withArgs(1, ethers.constants.AddressZero);
     });
 
     it("Should transfer token to worker", async function () {
