@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { BaseError, useAccount, useReadContract } from "wagmi";
 import { WCM } from "@/contracts/WCM";
@@ -13,7 +14,7 @@ function GetEmployeesByJob({ jobId }) {
 		account: address,
 		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 		abi: WCM.abi,
-		functionName: "getMyJobs",
+		functionName: "getEmployeesByJob",
 		args: [jobId],
 	});
 
@@ -31,10 +32,11 @@ function GetEmployeesByJob({ jobId }) {
 				)}
 			</div>
 		);
+	console.log(workers);
 
 	return (
 		<>
-			<h2>All Employees</h2>
+			<h2 classname="font-semibold text-3xl m-8">All Employees</h2>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 gap-4 m-5">
 				{workers.map((worker) => (
 					<div

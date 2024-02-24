@@ -23,7 +23,7 @@ function GetAllApplicants({ jobId }) {
 		functionName: "getAllApplicants",
 		args: [jobId],
 	});
-
+	console.log(workers);
 	const { data: hash, error1, isPending1, writeContract } = useWriteContract();
 
 	function submit(e) {
