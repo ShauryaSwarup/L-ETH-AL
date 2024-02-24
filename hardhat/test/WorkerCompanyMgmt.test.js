@@ -103,6 +103,17 @@ describe("WorkerCompanyMgmt Test", function () {
     
   })
 
+  it("Should Return All Employed Workers for a Job", async function(){
+    await workerCompanyMgmt.addCompany("Kalpataru", owner);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+
+    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
+    await workerCompanyMgmt.applyForJob(0);
+    expect((await workerCompanyMgmt.getEmployeesByJob(0)).length).to.equal(0);
+    await workerCompanyMgmt.hire(0);
+    expect((await workerCompanyMgmt.getEmployeesByJob(0)).length).to.equal(1);
+  })
+
   it("Should Return All Unemployed Workers", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
     await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
@@ -117,7 +128,7 @@ describe("WorkerCompanyMgmt Test", function () {
     expect(unemployedWorkers).to.have.lengthOf(2);
   })
 
-  /* it("Should Check In Worker", async function(){
+  it("Should Check In Worker And then Check Out", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
     await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
 
@@ -125,8 +136,10 @@ describe("WorkerCompanyMgmt Test", function () {
     await workerCompanyMgmt.applyForJob(0);
 
     await workerCompanyMgmt.hire(0);
-
-    await workerCompanyMgmt.checkIn(0);
-  }) */
+    const blockBefore = await ethers.provider.getBlock("latest");
+    await expect(workerCompanyMgmt.checkIn(0)).to.emit(workerCompanyMgmt, "WorkerCheckedIn").withArgs(0, owner, parseInt(blockBefore.timestamp) + 1);
+    await expect(workerCompanyMgmt.checkIn(0)).to.be.revertedWith("Worker already checked in");
+    await expect(workerCompanyMgmt.checkOut()).to.emit(workerCompanyMgmt, "WorkerCheckedOut").withArgs(0, owner, parseInt(blockBefore.timestamp) + 3);
+  }) 
 
 })
