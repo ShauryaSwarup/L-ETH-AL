@@ -80,16 +80,8 @@ contract WorkerCompanyMgmt is AccessControl{
     function addCompany(
         string memory _companyName,
         address _walletAddress
-<<<<<<< HEAD
-    ) external {
-        require(
-            companies[_walletAddress].walletAddress == address(0),
-            "Company already exists"
-        );
-=======
     ) external{
         require(companies[_walletAddress].walletAddress == address(0), "Company already exists");
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         companies[_walletAddress] = Company(_companyName, _walletAddress);
         _grantRole(COMPANY_ROLE, _walletAddress);
         emit CompanyAdded(_companyName, _walletAddress);
@@ -98,18 +90,9 @@ contract WorkerCompanyMgmt is AccessControl{
     function addWorker(
         address _walletAddress, 
         string memory _location
-<<<<<<< HEAD
-    ) external {
-        require(
-            workers[_walletAddress].walletAddress == address(0),
-            "Worker already exists"
-        );
-        Worker memory newWorker = Worker(_walletAddress, _location, false);
-=======
     ) external{
         require(workers[_walletAddress].walletAddress == address(0), "Worker already exists");
         Worker memory newWorker = Worker(workerIdCounter, _walletAddress, _location, false);
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         workers[_walletAddress] = newWorker;
         unemployedWorkers[workerIdCounter] = newWorker;
         totalUnemployedWorkers++;
@@ -144,14 +127,7 @@ contract WorkerCompanyMgmt is AccessControl{
         emit NewJobPosted(jobId, _location, _salary, _vacancies);
     }
 
-<<<<<<< HEAD
     function getAllJobs() external view returns (Job[] memory) {
-=======
-    function getAllJobs() external view returns (Job[] memory){
-        if(!hasRole(WORKER_ROLE, msg.sender)){
-            revert CallerNotWorker(msg.sender);
-        }
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         uint256 totalJobs = jobIdCounter;
         
         Job[] memory allJobs = new Job[](totalJobs);
@@ -200,28 +176,18 @@ contract WorkerCompanyMgmt is AccessControl{
             require(applicants[i] != msg.sender, "Worker has already applied for this job");
         }
 
-<<<<<<< HEAD
         jobApplicants[_jobId].push(msg.sender);
         jobApplicantsByLocation[_jobId][workers[msg.sender].location].push(
             msg.sender
         );
-=======
-        jobApplicants[_jobId].push(msg.sender); 
-        jobApplicantsByLocation[_jobId][workers[msg.sender].location].push(msg.sender);
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
 
         emit ApplicationSubmitted(msg.sender, _jobId);
     }
 
-<<<<<<< HEAD
     function getAllApplicants(
         uint256 _jobId
     ) external view returns (Worker[] memory) {
         if (!hasRole(COMPANY_ROLE, msg.sender)) {
-=======
-    function getAllApplicants(uint256 _jobId) external view returns (address[] memory) {
-        if(!hasRole(COMPANY_ROLE, msg.sender)){
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
             revert CallerNotCompany(msg.sender);
         }
         address[] memory workerAddresses = jobApplicants[_jobId];
@@ -232,18 +198,6 @@ contract WorkerCompanyMgmt is AccessControl{
         return result;
     }
 
-<<<<<<< HEAD
-    function getApplicantsByLocation(
-        uint256 _jobId,
-        string memory _location
-    ) internal view returns (Worker[] memory) {
-        if (!hasRole(COMPANY_ROLE, msg.sender)) {
-            revert CallerNotCompany(msg.sender);
-        }
-        address[] memory workerAddresses = jobApplicantsByLocation[_jobId][
-            _location
-        ];
-=======
     function getAllUnemployedWorkers() external view returns(Worker[] memory) {
         Worker[] memory unemployedWorkersArray = new Worker[](totalUnemployedWorkers);
         
@@ -259,7 +213,6 @@ contract WorkerCompanyMgmt is AccessControl{
             revert CallerNotCompany(msg.sender);
         }
         address[] memory workerAddresses = jobApplicantsByLocation[_jobId][_location];
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
         Worker[] memory result = new Worker[](workerAddresses.length);
 
         for (uint256 i = 0; i < workerAddresses.length; i++) {
@@ -379,9 +332,4 @@ contract WorkerCompanyMgmt is AccessControl{
         daysAttended[user][jobId] = attendedDays;
         totalHoursWorked[user][jobId] = totalHours;
     }
-<<<<<<< HEAD
 }
-=======
-
-}
->>>>>>> 790a81e049e45089cbb7df2579dbcdf90d43f77f
