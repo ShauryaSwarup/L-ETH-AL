@@ -45,9 +45,7 @@ describe("WorkerCompanyMgmt Test", function () {
 	});
 
 	it("Should Add a Worker", async function () {
-		const walletAddress = ethers.getAddress(
-			"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-		);
+		const walletAddress = addr2
 		await expect(workerCompanyMgmt.addWorker(walletAddress, "Vasant Vihar"))
 			.to.emit(workerCompanyMgmt, "WorkerAdded")
 			.withArgs(walletAddress, "Vasant Vihar");
@@ -106,11 +104,5 @@ describe("WorkerCompanyMgmt Test", function () {
 		expect(await workerCompanyMgmt.workerJob(owner)).to.equal(0);
 		const job = await workerCompanyMgmt.jobs(0);
 		expect(job.vacancies).to.equal(9);
-
-		it("Should Check In a Worker", async function () {
-			await expect(workerCompanyMgmt.checkIn(0))
-				.to.emit(workerCompanyMgmt, "CheckIn")
-				.withArgs();
-		});
 	});
 });

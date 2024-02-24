@@ -11,11 +11,11 @@ export function AddCompany({ account }) {
         const formData = new FormData(e.target);
         company = formData.get("company");
         writeContract({
-            address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-            abi: WCM.abi,
-            functionName: "addCompany",
-            args: [account.address, company],
-        });
+					address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+					abi: WCM.abi,
+					functionName: "addCompany",
+					args: [company, account.address],
+				});
     }
 
     const { isLoading: isConfirming, isSuccess: isConfirmed } =
