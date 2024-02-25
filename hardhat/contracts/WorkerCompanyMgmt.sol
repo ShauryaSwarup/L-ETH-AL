@@ -67,6 +67,7 @@ contract WorkerCompanyMgmt is AccessControl {
     event WorkerAdded(address worker, string location);
     event WorkerCheckedIn(uint256 jobId, address workerWalletAddress, uint256 checkInTime);
     event WorkerCheckedOut(uint256 jobId, address workerWalletAddress, uint256 checkOutTime);
+    event PaymentMade(address _workerAddress, uint256 amount, bytes data);
 
     constructor() {
         jobIdCounter = 0;
@@ -354,11 +355,9 @@ contract WorkerCompanyMgmt is AccessControl {
         uint256 amount = hoursWorked * job.salary;
         address companyWalletAddress = job.company;
         require(companyWalletAddress.balance >= amount, "Insufficient balance in the contract");
-        // _nftContractAddy.call{value: uint256(1000000000000000)}("");
         (bool sent, bytes memory data) = payable(msg.sender).call{value: msg.value}("");
         require(sent, "Failed to send Ether");
-        // bool success = payable(msg.sender).send{value: uint256(amount * 10**18)}("");
-        // require(success, "Trsn Unsuccessful");
+        emit PaymentMade(msg.sender,msg.value,data);
     }
 
     function checkIn(uint256 _jobId) external {
