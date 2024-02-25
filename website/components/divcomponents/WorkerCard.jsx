@@ -10,9 +10,9 @@ function WorkerCard({ worker }) {
                     Wallet Address: {worker.walletAddress}
                 </p>
                 <p>Status: {worker.isEmployed ? "Employed" : "Unemployed"}</p>
-                <div className='card-actions justify-end'>
+                {/* <div className='card-actions justify-end'>
                     <button className='btn'>Hire Now</button>
-                </div>
+                </div> */}
             </div>
         </div>
     );
