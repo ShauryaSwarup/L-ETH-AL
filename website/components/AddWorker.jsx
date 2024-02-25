@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { WCM } from "@/contracts/WCM";
-import HashAndError from "./HashAndError";
+import HashAndError from "./divcomponents/HashAndError";
 
 export function AddWorker({ account }) {
 	let location;
@@ -39,7 +39,12 @@ export function AddWorker({ account }) {
 				<button type="submit" disabled={isPending} className="btn">
 					{isPending ? "Confirming..." : "Submit"}
 				</button>
-				<HashAndError hash={hash} isConfirming={isConfirming} isConfirmed={isConfirmed} error={error}/>
+				<HashAndError
+					hash={hash}
+					isConfirming={isConfirming}
+					isConfirmed={isConfirmed}
+					error={error}
+				/>
 			</div>
 		</form>
 	);

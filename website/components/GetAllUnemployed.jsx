@@ -40,7 +40,7 @@ function GetAllUnemployed() {
 				{workers.map((worker) => (
 					<div
 						key={worker.walletAddress}
-						className="card w-124 bg-primary m-1 text-primary-content transition-transform duration-300 hover:scale-105"
+						className="card w-124 bg-gray-600 rounded-xl m-1 font-semibold transition-transform duration-300 hover:scale-105"
 					>
 						<div className="card-body">
 							<h2 className="card-title">{worker.name}</h2>

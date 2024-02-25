@@ -9,7 +9,7 @@ import {
 	useWriteContract,
 } from "wagmi";
 import { WCM } from "@/contracts/WCM";
-import HashAndError from "./HashAndError";
+import HashAndError from "./divcomponents/HashAndError";
 import WorkerCard from "./divcomponents/WorkerCard";
 import JobCard from "./divcomponents/JobCard";
 
