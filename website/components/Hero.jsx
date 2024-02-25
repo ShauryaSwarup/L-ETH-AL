@@ -9,10 +9,10 @@ function Hero() {
                     <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold mb-4 justify-center'>
                         DeWages
                     </h1>
-                    <h2 className='text-2xl sm:text-2xl md:text-5xl font-semibold text-indigo-500 mb-6'>
+                    <h1 className='text-2xl sm:text-2xl md:text-6xl md:leading-tight font-extrabold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 mb-6'>
                         A decentralized hiring process
-                    </h2>
-					<h3 className='text-xl sm:text-2xl md:text-3xl font-bold mb-4 justify-center'>
+                    </h1>
+                    <h3 className='text-xl sm:text-2xl md:text-3xl font-bold mb-4 justify-center'>
 						Get paid on time. Transparency. No-trust policy.
 					</h3>
                     <Link href='/verify'>
