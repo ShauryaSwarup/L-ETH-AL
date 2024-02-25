@@ -217,7 +217,14 @@ contract WorkerCompanyMgmt is AccessControl {
             workers[msg.sender].isEmployed == false,
             "Worker is already employed"
         );
-
+        require(
+            _jobId<=jobIdCounter,
+            "Trying to apply to a job not yet created"
+        );
+        require(
+            jobs[_jobId].vacancies>0,
+            "No more applications possible"
+        );
         address[] storage applicants = jobApplicants[_jobId];
         for (uint256 i = 0; i < applicants.length; i++) {
             require(
@@ -307,7 +314,7 @@ contract WorkerCompanyMgmt is AccessControl {
         return result;
     }
 
-    function hire(uint256 _jobId) external {
+    function hire(uint256 _jobId) external payable {
         if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
         }
@@ -316,13 +323,15 @@ contract WorkerCompanyMgmt is AccessControl {
         uint256 vacancies = job.vacancies;
         string memory _location = job.location;
         address companyAddress = job.company;
+        Worker[] memory applicants = getAllApplicants2(_jobId);
+        uint256 stakedMoney = (applicants.length * job.salary) * job.hoursPerDay;
         require(
             companyAddress == msg.sender,
             "This job is not offered by you."
         );
         require(vacancies > 0, "No vacancies available for this job");
-
-        Worker[] memory applicants = getAllApplicants2(_jobId);
+        require(applicants.length > 0, "No applicants for this job");
+        require(msg.value >= stakedMoney,"Must stake given price to hire");
 
         uint256 copyVacancies = vacancies;
         uint256 hiredCount = 0;
@@ -373,31 +382,6 @@ contract WorkerCompanyMgmt is AccessControl {
         }
     }
 
-    function pay(uint256 _jobId) external payable {
-        require(
-            attendanceRecords[msg.sender].checkInTime != 0,
-            "Worker has not checked in"
-        );
-        require(
-            attendanceRecords[msg.sender].checkOutTime != 0,
-            "Worker has not checked out"
-        );
-        Attendance memory attendance = attendanceRecords[msg.sender];
-        uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
-        Job memory job = jobs[_jobId];
-        uint256 amount = hoursWorked * job.salary;
-        address companyWalletAddress = job.company;
-        require(
-            companyWalletAddress.balance >= amount,
-            "Insufficient balance in the contract"
-        );
-        (bool sent, bytes memory data) = payable(msg.sender).call{
-            value: msg.value
-        }("");
-        require(sent, "Failed to send Ether");
-        emit PaymentMade(msg.sender, msg.value, data);
-    }
-
     function checkIn(uint256 _jobId) external {
         require(
             attendanceRecords[msg.sender].checkInTime == 0,
@@ -435,7 +419,7 @@ contract WorkerCompanyMgmt is AccessControl {
         // Remove the last element from the array
         employedWorkers.pop();
     }
-     function checkOut(uint256 _jobId) external {
+     function checkOut(uint256 _jobId) external payable {
         require(
             attendanceRecords[msg.sender].checkInTime != 0,
             "Worker has not checked in"
@@ -444,6 +428,8 @@ contract WorkerCompanyMgmt is AccessControl {
             attendanceRecords[msg.sender].checkOutTime == 0,
             "Worker already checked out"
         );
+        (bool sent, ) = payable(msg.sender).call{value: msg.value}("");
+        require(sent, "Failed to send Ether to worker");
         attendanceRecords[msg.sender].checkOutTime = block.timestamp;
         Attendance memory attendance = attendanceRecords[msg.sender];
         totalHoursWorked[msg.sender] +=
