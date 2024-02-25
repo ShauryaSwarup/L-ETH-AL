@@ -184,6 +184,10 @@ contract WorkerCompanyMgmt is AccessControl {
     function getEmployeesByJob(uint256 _jobId) external view returns(Worker[] memory){
         return jobWorkers[_jobId];
     }
+    
+    function getJobById(uint256 _jobId) external view returns (Job memory) {
+        return jobs[_jobId];
+    }
 
     function getCurrentJob() external view returns(Job memory){
         uint256 jobId = workerJob[msg.sender];

@@ -30,10 +30,13 @@ function PostJob({ account }) {
 		});
 
 	return (
-		<form onSubmit={submit} className="max-w-md mx-auto mt-8">
-			<div className="grid grid-cols-1 gap-4">
+		<div className="max-w-md mx-auto mt-8 p-8 border">
+			<h2 className="text-2xl font-semibold text-center mb-4">
+				Post a New Job
+			</h2>
+			<form onSubmit={submit} className="grid grid-cols-1 gap-4">
 				<label className="block">
-					<span className="text-gray-700">Location:</span>
+					<span className="text-gray-200">Location:</span>
 					<input
 						type="text"
 						name="location"
@@ -42,7 +45,7 @@ function PostJob({ account }) {
 					/>
 				</label>
 				<label className="block">
-					<span className="text-gray-700">Salary:</span>
+					<span className="text-gray-200">Salary:</span>
 					<input
 						type="text"
 						name="salary"
@@ -51,7 +54,7 @@ function PostJob({ account }) {
 					/>
 				</label>
 				<label className="block">
-					<span className="text-gray-700">Vacancies:</span>
+					<span className="text-gray-200">Vacancies:</span>
 					<input
 						type="text"
 						name="vacancies"
@@ -59,23 +62,17 @@ function PostJob({ account }) {
 						className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
 					/>
 				</label>
-				{/* <button
-					type="submit"
-					className="w-full bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
-				>
-					Post Job
-				</button> */}
-			</div>
-			<div className="text-center mt-4">
-				<button type="submit" disabled={isPending} className="btn">
-					{isPending ? "Confirming..." : "Submit"}
-				</button>
-				{hash && <div>Transaction Hash: {hash}</div>}
-				{isConfirming && <div>Waiting for confirmation...</div>}
-				{isConfirmed && <div>Transaction confirmed.</div>}
-				{error && <div>Error: {error.shortMessage || error.message}</div>}
-			</div>
-		</form>
+				<div className="text-center mt-4">
+					<button type="submit" disabled={isPending} className="btn">
+						{isPending ? "Confirming..." : "Submit"}
+					</button>
+					{hash && <div>Transaction Hash: {hash}</div>}
+					{isConfirming && <div>Waiting for confirmation...</div>}
+					{isConfirmed && <div>Transaction confirmed.</div>}
+					{error && <div>Error: {error.shortMessage || error.message}</div>}
+				</div>
+			</form>
+		</div>
 	);
 }
 
