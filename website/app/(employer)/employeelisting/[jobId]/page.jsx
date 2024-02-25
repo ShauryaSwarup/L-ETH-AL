@@ -1,4 +1,4 @@
-import GetAllApplicants from "@/components/GetAllApplicants";
+import HireAllApplicants from "@/components/HireAllApplicants";
 
 const EmployeeListing = ({ params }) => {
     const jobId = params.jobId;
@@ -8,7 +8,7 @@ const EmployeeListing = ({ params }) => {
             <h1 className='font-semibold text-3xl'>
                 Applicants for JobID: {jobId}
             </h1>
-            <GetAllApplicants jobId={jobId} />
+            <HireAllApplicants jobId={jobId} />
         </>
     );
 };

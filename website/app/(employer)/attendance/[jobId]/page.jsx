@@ -3,57 +3,72 @@ import GetEmployeesByJob from "@/components/GetEmployeesByJob";
 import React from "react";
 import { useReadContract, useAccount } from "wagmi";
 import { WCM } from "@/contracts/WCM";
+import { QRCodeSVG } from "qrcode.react";
+import JobCard from "@/components/JobCard";
 
 function page({ params }) {
-	const { address } = useAccount();
+    const { address } = useAccount();
 
-	const jobId = params.jobId;
-	const {
-		data: job,
-		error,
-		isPending,
-	} = useReadContract({
-		account: address,
-		address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-		abi: WCM.abi,
-		functionName: "getJobById",
-		args: [jobId],
-	});
-	if (isPending) return <div>Loading...</div>;
-	if (error)
-		return (
-			<div>
-				{error && (
-					<span>
-						Error:{" "}
-						{(error instanceof BaseError && error.shortMessage) ||
-							error.message}
-					</span>
-				)}
-			</div>
-		);
+    const jobId = params.jobId;
+    const {
+        data: job,
+        error,
+        isPending,
+    } = useReadContract({
+        account: address,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        abi: WCM.abi,
+        functionName: "getJobById",
+        args: [jobId],
+    });
+    if (isPending) return <div>Loading...</div>;
+    if (error)
+        return (
+            <div>
+                {error && (
+                    <span>
+                        Error:{" "}
+                        {(error instanceof BaseError && error.shortMessage) ||
+                            error.message}
+                    </span>
+                )}
+            </div>
+        );
 
-	return (
-		<>
-			<div className="p-4  rounded-lg">
-				<h1 className="font-semibold text-3xl mb-4"></h1>
-				Employees for JobID: {jobId}
-				<div key={job.jobId}>
-					<div className="card w-124 bg-primary text-primary-content m-5">
-						<div className="card-body">
-							<h2 className="card-title">{job.location}</h2>
-							<p>{`Company: ${job.company}`}</p>
-							<p>{`Salary: $${job.salary} per day`}</p>
-							<div className="flex gap-3"></div>
-						</div>
-					</div>
-				</div>
-				<div className="border-t border-gray-200">
-					<GetEmployeesByJob jobId={jobId} />
-				</div>
-			</div>
-		</>
-	);
+    return (
+        <>
+            <div className='p-4  rounded-lg'>
+                <h1 className='font-semibold text-3xl mb-4 text-center'>
+                    Employees for JobID: {jobId}{" "}
+                </h1>
+                <JobCard job={job} />
+                <div className='flex flex-row justify-between'>
+                    <div className='flex flex-col items-center w-fit rounded-xl p-8 bg-indigo-900 m-auto'>
+                        <h1 className='font-semibold text-3xl mb-4'>
+                            Scan QR Code to CheckIn
+                        </h1>
+                        <div className='bg-gray-500 card-body rounded-xl w-fit'>
+                            <QRCodeSVG
+                                className='w-auto'
+                                value={`http://localhost:3000/checkin/${jobId}_${job.companyName}`}
+                            />
+                        </div>
+                    </div>
+                    <div className='flex flex-col items-center w-fit rounded-xl p-8 bg-indigo-900 m-auto'>
+                        <h1 className='font-semibold text-3xl mb-4'>
+                            Scan QR Code to CheckOut
+                        </h1>
+                        <div className='bg-gray-500 card-body rounded-xl w-fit'>
+                            <QRCodeSVG
+                                className='w-auto'
+                                value={`http://localhost:3000/checkout/${jobId}_${job.companyName}`}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 }
 
 export default page;

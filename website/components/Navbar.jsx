@@ -66,6 +66,9 @@ export default function Navbar() {
                             <Link href='/nftlisting'>My NFTs</Link>
                         </li>
                         <li>
+                            <Link href='/currentjob'>Attendance</Link>
+                        </li>
+                        <li>
                             <Link href='/myjobpostings'>My Jobs</Link>
                         </li>
                         <li>
