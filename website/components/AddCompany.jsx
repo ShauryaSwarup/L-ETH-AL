@@ -1,6 +1,7 @@
 import { WCM } from "@/contracts/WCM";
 import * as React from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import HashAndError from "./HashAndError";
 
 export function AddCompany({ account }) {
     let company;
@@ -24,26 +25,26 @@ export function AddCompany({ account }) {
         });
 
     return (
-        <form onSubmit={submit}>
-            <div className='mt-4 text-center'>
-                <input
-                    type='text'
-                    name='company'
-                    placeholder='Company Name'
-                    className='px-2 py-1 rounded-md border border-gray-300'
-                />
-            </div>
-            <div className='text-center mt-4'>
-                <button type='submit' disabled={isPending} className='btn'>
-                    {isPending ? "Confirming..." : "Submit"}
-                </button>
-                {hash && <div>Transaction Hash: {hash}</div>}
-                {isConfirming && <div>Waiting for confirmation...</div>}
-                {isConfirmed && <div>Transaction confirmed.</div>}
-                {error && (
-                    <div>Error: {error.shortMessage || error.message}</div>
-                )}
-            </div>
-        </form>
-    );
+			<form onSubmit={submit}>
+				<div className="mt-4 text-center">
+					<input
+						type="text"
+						name="company"
+						placeholder="Company Name"
+						className="px-2 py-1 rounded-md border border-gray-300"
+					/>
+				</div>
+				<div className="text-center mt-4">
+					<button type="submit" disabled={isPending} className="btn">
+						{isPending ? "Confirming..." : "Submit"}
+					</button>
+					<HashAndError
+						hash={hash}
+						isConfirming={isConfirming}
+						isConfirmed={isConfirmed}
+						error={error}
+					/>
+				</div>
+			</form>
+		);
 }
