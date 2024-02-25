@@ -125,9 +125,12 @@ describe("WorkerCompanyMgmt Test", function () {
 
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     await workerCompanyMgmt.applyForJob(0);
-    expect((await workerCompanyMgmt.getEmployeesByJob(0)).length).to.equal(0);
+
     await workerCompanyMgmt.hire(0);
-    expect((await workerCompanyMgmt.getEmployeesByJob(0)).length).to.equal(1);
+
+    const worker = await workerCompanyMgmt.workers(owner);
+    expect(worker.isEmployed).to.be.true;
+    expect((await workerCompanyMgmt.getEmployeesByJob(0))[0].isEmployed).to.equal(true);
   })
 
   it("Should Return All Unemployed Workers", async function(){
