@@ -17,9 +17,9 @@ module.exports = {
         hardhat: {
             chainId: 1337,
         },
-        // mumbai: {
-        //     url: process.env.RPC_URL,
-        //     accounts: [process.env.PRIVATE_KEY],
-        // }
+        mumbai: {
+            url: process.env.RPC_URL,
+            accounts: [process.env.PRIVATE_KEY],
+        }
     },
 };
