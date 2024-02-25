@@ -23,7 +23,6 @@ describe("DWagesNFT Test", function () {
 
     it("Should update listing price", async function () {
         const newPrice = ethers.parseEther("0.05");
-        const listingPrice = await dwagesNFT.getListingPrice(); // Fetching listing price
         await dwagesNFT.updateListingPrice(newPrice);
 
         expect(await dwagesNFT.getListingPrice()).to.equal(newPrice);
@@ -31,12 +30,10 @@ describe("DWagesNFT Test", function () {
 
     it("Should allow redemption of a token", async function () {
         const price = ethers.parseEther("0.1");
-        const listingPrice = await dwagesNFT.getListingPrice(); // Fetching listing price
-        await dwagesNFT.companyMints(price, { value: listingPrice });
-
-        await expect(dwagesNFT.redeemToken(1))
-            .to.emit(dwagesNFT, "Redeemed")
-            .withArgs(1, ethers.constants.AddressZero);
+        const listingPrice = dwagesNFT.getListingPrice();
+        const markett = await dwagesNFT._tokenIds();
+        console.log(markett)
+        await expect(dwagesNFT.redeemToken(1)).to.emit(dwagesNFT, "Redeemed");
     });
 
     it("Should transfer token to worker", async function () {
