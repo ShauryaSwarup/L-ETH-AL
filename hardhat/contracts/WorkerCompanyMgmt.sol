@@ -52,6 +52,7 @@ contract WorkerCompanyMgmt is AccessControl {
     mapping(uint256 => Worker) public unemployedWorkers;
     mapping(address => uint256) public totalHoursWorked;
     mapping(address => Attendance) public attendanceRecords;
+    mapping(address => uint256[]) public jobsAppliedToByWorker;
 
     uint256 jobIdCounter;
     uint256 workerIdCounter;
@@ -204,11 +205,6 @@ contract WorkerCompanyMgmt is AccessControl {
         return jobs[_jobId];
     }
 
-    function getCurrentJob() external view returns (Job memory) {
-        uint256 jobId = workerJob[msg.sender];
-        return jobs[jobId];
-    }
-
     function getWorkerFromAddress() external view returns (Worker memory) {
         return workers[msg.sender];
     }
@@ -234,7 +230,7 @@ contract WorkerCompanyMgmt is AccessControl {
         jobApplicantsByLocation[_jobId][workers[msg.sender].location].push(
             msg.sender
         );
-
+        jobsAppliedToByWorker[msg.sender].push(_jobId);
         emit ApplicationSubmitted(msg.sender, _jobId);
     }
 
@@ -283,6 +279,20 @@ contract WorkerCompanyMgmt is AccessControl {
         return result;
     }
 
+    function getJobsAppliedToByWorker() public view returns(uint256[] memory){
+        if (!hasRole(WORKER_ROLE, msg.sender)) {
+            revert CallerNotWorker(msg.sender);
+        }
+        return jobsAppliedToByWorker[msg.sender];
+    }
+
+    function getCurrentJob() public view returns (Job memory){
+        if (!hasRole(WORKER_ROLE, msg.sender)) {
+            revert CallerNotWorker(msg.sender);
+        }
+        require(workers[msg.sender].isEmployed,"Currently Not Employed");
+        return jobs[workerJob[msg.sender]];
+    }
     function getAllApplicants2(
         uint256 _jobId
     ) internal view returns (Worker[] memory) {
@@ -301,7 +311,7 @@ contract WorkerCompanyMgmt is AccessControl {
         if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
         }
-
+        
         Job memory job = jobs[_jobId];
         uint256 vacancies = job.vacancies;
         string memory _location = job.location;
@@ -314,10 +324,11 @@ contract WorkerCompanyMgmt is AccessControl {
 
         Worker[] memory applicants = getAllApplicants2(_jobId);
 
+        uint256 copyVacancies = vacancies;
         uint256 hiredCount = 0;
         for (
             uint256 i = 0;
-            i < applicants.length && hiredCount < vacancies;
+            i < applicants.length && hiredCount<copyVacancies;
             i++
         ) {
             Worker memory worker = applicants[i];
