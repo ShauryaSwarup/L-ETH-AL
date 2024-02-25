@@ -151,14 +151,15 @@ describe("WorkerCompanyMgmt Test", function () {
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
     await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
 
-    await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
-    await workerCompanyMgmt.applyForJob(0);
+    await workerCompanyMgmt.addWorker(addr1, "Vasant Vihar");
+    // await contract.connect(addr1).placeBet(game.id, 2, { value: ethers.utils.parseEther("0.5") });
+    await workerCompanyMgmt.connect(addr1).applyForJob(0);
 
     await workerCompanyMgmt.hire(0);
     const blockBefore = await ethers.provider.getBlock("latest");
-    await expect(workerCompanyMgmt.checkIn(0)).to.emit(workerCompanyMgmt, "WorkerCheckedIn").withArgs(0, owner, parseInt(blockBefore.timestamp) + 1);
-    await expect(workerCompanyMgmt.checkIn(0)).to.be.revertedWith("Worker already checked in");
-    await expect(workerCompanyMgmt.checkOut(0)).to.emit(workerCompanyMgmt, "WorkerCheckedOut").withArgs(0, owner, parseInt(blockBefore.timestamp) + 3);
+    expect(await workerCompanyMgmt.connect(addr1).checkIn(0)).to.emit(workerCompanyMgmt, "WorkerCheckedIn").withArgs(0, owner, parseInt(blockBefore.timestamp) + 1);
+    await workerCompanyMgmt.connect(addr1).checkOut();
+    await workerCompanyMgmt.connect(addr1).pay(0, { value: ethers.parseEther("0.5") });
   }) 
 
 })

@@ -345,7 +345,7 @@ contract WorkerCompanyMgmt is AccessControl {
         }
     }
 
-    function pay(uint256 _jobId) internal {
+    function pay(uint256 _jobId) external payable {
         require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
         require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
         Attendance memory attendance = attendanceRecords[msg.sender];
@@ -354,10 +354,14 @@ contract WorkerCompanyMgmt is AccessControl {
         uint256 amount = hoursWorked * job.salary;
         address companyWalletAddress = job.company;
         require(companyWalletAddress.balance >= amount, "Insufficient balance in the contract");
-        payable(msg.sender).transfer(amount);        
+        // _nftContractAddy.call{value: uint256(1000000000000000)}("");
+        (bool sent, bytes memory data) = payable(msg.sender).call{value: msg.value}("");
+        require(sent, "Failed to send Ether");
+        // bool success = payable(msg.sender).send{value: uint256(amount * 10**18)}("");
+        // require(success, "Trsn Unsuccessful");
     }
 
-    function checkIn(uint256 _jobId) external payable {
+    function checkIn(uint256 _jobId) external {
         require(attendanceRecords[msg.sender].checkInTime == 0, "Worker already checked in");
         Attendance memory newAttendance = Attendance({
             jobId: _jobId,
@@ -369,7 +373,7 @@ contract WorkerCompanyMgmt is AccessControl {
         emit WorkerCheckedIn(_jobId, msg.sender, block.timestamp);
     }
 
-    function checkOut(uint256 _jobId) external {
+    function checkOut() external {
         require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
         require(attendanceRecords[msg.sender].checkOutTime == 0, "Worker already checked out");
         attendanceRecords[msg.sender].checkOutTime = block.timestamp;
