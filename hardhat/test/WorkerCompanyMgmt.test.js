@@ -26,9 +26,9 @@ describe("WorkerCompanyMgmt Test", function () {
 	});
 
   it("Should Return Whether Caller is a Company", async function(){
-    expect(await workerCompanyMgmt.isCompany()).to.equal(false);
+    expect(await workerCompanyMgmt.isCompany(owner)).to.equal(false);
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
-    expect(await workerCompanyMgmt.isCompany()).to.equal(true);
+    expect(await workerCompanyMgmt.isCompany(owner)).to.equal(true);
   })
 
   it("Should Post Two Jobs", async function(){
@@ -39,13 +39,14 @@ describe("WorkerCompanyMgmt Test", function () {
     const location = "Thane";
     const salary = ethers.parseEther("0.01");
     const vacancies = 10;
+    const hours = 7;
 
-		await expect(workerCompanyMgmt.postJob(location, salary, vacancies))
+		await expect(workerCompanyMgmt.postJob(location, salary, vacancies, hours))
 			.to.emit(workerCompanyMgmt, "NewJobPosted")
-			.withArgs(0, location, salary, vacancies);
-		await expect(workerCompanyMgmt.postJob(location, salary, vacancies))
+			.withArgs(0, location, salary, vacancies, hours);
+		await expect(workerCompanyMgmt.postJob(location, salary, vacancies, hours))
 			.to.emit(workerCompanyMgmt, "NewJobPosted")
-			.withArgs(1, location, salary, vacancies);
+			.withArgs(1, location, salary, vacancies, hours);
 	});
 
 	it("Should Add a Worker", async function () {
@@ -62,8 +63,8 @@ describe("WorkerCompanyMgmt Test", function () {
 		);
 		workerCompanyMgmt.addCompany(companyName, walletAddress);
 
-		await workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 10);
-		await workerCompanyMgmt.postJob("Mumbai", ethers.parseEther("0.02"), 20);
+		await workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 10, 7);
+		await workerCompanyMgmt.postJob("Mumbai", ethers.parseEther("0.02"), 20, 8);
 		await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
 		const allJobs = await workerCompanyMgmt.getAllJobs();
 
@@ -81,14 +82,14 @@ describe("WorkerCompanyMgmt Test", function () {
   it("Should Apply for a Job", async function(){
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     workerCompanyMgmt.addCompany("Kalpataru", owner);
-    workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 20);
+    workerCompanyMgmt.postJob("Thane", ethers.parseEther("0.01"), 20, 7);
     await expect(workerCompanyMgmt.applyForJob(0)).to.emit(workerCompanyMgmt, "ApplicationSubmitted").withArgs(owner, 0);
     await expect(workerCompanyMgmt.applyForJob(0)).to.be.revertedWith("Worker has already applied for this job");
   })
 
   it("Should Hire Workers", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
-    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10, 8);
 
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     await workerCompanyMgmt.applyForJob(0);
@@ -105,7 +106,7 @@ describe("WorkerCompanyMgmt Test", function () {
 
   it("Should Return the Current Job", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
-    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10, 9);
 
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     await workerCompanyMgmt.applyForJob(0);
@@ -121,7 +122,7 @@ describe("WorkerCompanyMgmt Test", function () {
 
   it("Should Return All Employed Workers for a Job", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
-    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10, 5);
 
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     await workerCompanyMgmt.applyForJob(0);
@@ -135,7 +136,7 @@ describe("WorkerCompanyMgmt Test", function () {
 
   it("Should Return All Unemployed Workers", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
-    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10, 8);
 
     await workerCompanyMgmt.addWorker(owner, "Vasant Vihar");
     await workerCompanyMgmt.addWorker(addr2, "Manpada");
@@ -149,16 +150,15 @@ describe("WorkerCompanyMgmt Test", function () {
 
   it("Should Check In Worker And then Check Out", async function(){
     await workerCompanyMgmt.addCompany("Kalpataru", owner);
-    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10);
+    await workerCompanyMgmt.postJob("Vasant Vihar", ethers.parseEther("0.01"), 10, 4);
 
     await workerCompanyMgmt.addWorker(addr1, "Vasant Vihar");
-    // await contract.connect(addr1).placeBet(game.id, 2, { value: ethers.utils.parseEther("0.5") });
     await workerCompanyMgmt.connect(addr1).applyForJob(0);
 
     await workerCompanyMgmt.hire(0);
     const blockBefore = await ethers.provider.getBlock("latest");
     expect(await workerCompanyMgmt.connect(addr1).checkIn(0)).to.emit(workerCompanyMgmt, "WorkerCheckedIn").withArgs(0, owner, parseInt(blockBefore.timestamp) + 1);
-    await workerCompanyMgmt.connect(addr1).checkOut();
+    await workerCompanyMgmt.connect(addr1).checkOut(0);
     await workerCompanyMgmt.connect(addr1).pay(0, { value: ethers.parseEther("0.5") });
   }) 
 

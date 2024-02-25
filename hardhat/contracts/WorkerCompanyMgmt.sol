@@ -30,6 +30,7 @@ contract WorkerCompanyMgmt is AccessControl {
         address[] employedWorkers;
         uint256 salary;
         uint256 vacancies;
+        uint256 hoursPerDay;
     }
 
     struct Attendance {
@@ -60,13 +61,22 @@ contract WorkerCompanyMgmt is AccessControl {
         uint256 jobId,
         string title,
         uint256 salary,
-        uint256 vacancies
+        uint256 vacancies,
+        uint256 hoursPerDay
     );
     event ApplicationSubmitted(address worker, uint256 jobId);
     event CompanyAdded(string companyName, address company);
     event WorkerAdded(address worker, string location);
-    event WorkerCheckedIn(uint256 jobId, address workerWalletAddress, uint256 checkInTime);
-    event WorkerCheckedOut(uint256 jobId, address workerWalletAddress, uint256 checkOutTime);
+    event WorkerCheckedIn(
+        uint256 jobId,
+        address workerWalletAddress,
+        uint256 checkInTime
+    );
+    event WorkerCheckedOut(
+        uint256 jobId,
+        address workerWalletAddress,
+        uint256 checkOutTime
+    );
     event PaymentMade(address _workerAddress, uint256 amount, bytes data);
 
     constructor() {
@@ -121,7 +131,8 @@ contract WorkerCompanyMgmt is AccessControl {
     function postJob(
         string memory _location,
         uint256 _salary,
-        uint256 _vacancies
+        uint256 _vacancies,
+        uint256 _hoursPerDay
     ) external {
         if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
@@ -136,12 +147,13 @@ contract WorkerCompanyMgmt is AccessControl {
             msg.sender,
             new address[](0),
             _salary,
-            _vacancies
+            _vacancies,
+            _hoursPerDay
         );
         companyJobs[msg.sender][jobId] = newJob;
         jobs[jobId] = newJob;
         jobIdCounter++;
-        emit NewJobPosted(jobId, _location, _salary, _vacancies);
+        emit NewJobPosted(jobId, _location, _salary, _vacancies, _hoursPerDay);
     }
 
     function getAllJobs() external view returns (Job[] memory) {
@@ -182,20 +194,22 @@ contract WorkerCompanyMgmt is AccessControl {
         return myJobs;
     }
 
-    function getEmployeesByJob(uint256 _jobId) external view returns(Worker[] memory){
+    function getEmployeesByJob(
+        uint256 _jobId
+    ) external view returns (Worker[] memory) {
         return jobWorkers[_jobId];
     }
-    
+
     function getJobById(uint256 _jobId) external view returns (Job memory) {
         return jobs[_jobId];
     }
 
-    function getCurrentJob() external view returns(Job memory){
+    function getCurrentJob() external view returns (Job memory) {
         uint256 jobId = workerJob[msg.sender];
         return jobs[jobId];
     }
 
-    function getWorkerFromAddress() external view returns(Worker memory){
+    function getWorkerFromAddress() external view returns (Worker memory) {
         return workers[msg.sender];
     }
 
@@ -269,14 +283,16 @@ contract WorkerCompanyMgmt is AccessControl {
         return result;
     }
 
-    function getAllApplicants2(uint256 _jobId) internal view returns(Worker[] memory){
-       if (!hasRole(COMPANY_ROLE, msg.sender)) {
+    function getAllApplicants2(
+        uint256 _jobId
+    ) internal view returns (Worker[] memory) {
+        if (!hasRole(COMPANY_ROLE, msg.sender)) {
             revert CallerNotCompany(msg.sender);
         }
         address[] memory workerAddresses = jobApplicants[_jobId];
         Worker[] memory result = new Worker[](workerAddresses.length);
-        for(uint i=0;i<workerAddresses.length;i++){
-            result[i]=workers[workerAddresses[i]];
+        for (uint i = 0; i < workerAddresses.length; i++) {
+            result[i] = workers[workerAddresses[i]];
         }
         return result;
     }
@@ -347,38 +363,86 @@ contract WorkerCompanyMgmt is AccessControl {
     }
 
     function pay(uint256 _jobId) external payable {
-        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
-        require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
+        require(
+            attendanceRecords[msg.sender].checkInTime != 0,
+            "Worker has not checked in"
+        );
+        require(
+            attendanceRecords[msg.sender].checkOutTime != 0,
+            "Worker has not checked out"
+        );
         Attendance memory attendance = attendanceRecords[msg.sender];
         uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
         Job memory job = jobs[_jobId];
         uint256 amount = hoursWorked * job.salary;
         address companyWalletAddress = job.company;
-        require(companyWalletAddress.balance >= amount, "Insufficient balance in the contract");
-        (bool sent, bytes memory data) = payable(msg.sender).call{value: msg.value}("");
+        require(
+            companyWalletAddress.balance >= amount,
+            "Insufficient balance in the contract"
+        );
+        (bool sent, bytes memory data) = payable(msg.sender).call{
+            value: msg.value
+        }("");
         require(sent, "Failed to send Ether");
-        emit PaymentMade(msg.sender,msg.value,data);
+        emit PaymentMade(msg.sender, msg.value, data);
     }
 
     function checkIn(uint256 _jobId) external {
-        require(attendanceRecords[msg.sender].checkInTime == 0, "Worker already checked in");
+        require(
+            attendanceRecords[msg.sender].checkInTime == 0,
+            "Worker already checked in"
+        );
         Attendance memory newAttendance = Attendance({
             jobId: _jobId,
             workerWalletAddress: msg.sender,
             checkInTime: block.timestamp,
-            checkOutTime: 0 
+            checkOutTime: 0
         });
         attendanceRecords[msg.sender] = newAttendance;
         emit WorkerCheckedIn(_jobId, msg.sender, block.timestamp);
     }
-
-    function checkOut() external {
-        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
-        require(attendanceRecords[msg.sender].checkOutTime == 0, "Worker already checked out");
+    function removeHiredEmployee(uint _jobId) private {
+        Job storage job = jobs[_jobId];
+        // Retrieve the array of employed workers
+        address[] storage employedWorkers = job.employedWorkers;
+        // Iterate through the employed workers to find the index of the worker to remove
+        uint256 indexToRemove;
+        bool found = false;
+        for (uint256 i = 0; i < employedWorkers.length; i++) {
+            if (employedWorkers[i] == msg.sender) {
+                indexToRemove = i;
+                found = true;
+                break;
+            }
+        }
+        // Ensure that the worker is employed in this job
+        require(found, "Worker is not employed in this job");
+        // Shift the elements after the index to the left
+        for (uint256 i = indexToRemove; i < employedWorkers.length - 1; i++) {
+            employedWorkers[i] = employedWorkers[i + 1];
+        }
+        // Remove the last element from the array
+        employedWorkers.pop();
+    }
+     function checkOut(uint256 _jobId) external {
+        require(
+            attendanceRecords[msg.sender].checkInTime != 0,
+            "Worker has not checked in"
+        );
+        require(
+            attendanceRecords[msg.sender].checkOutTime == 0,
+            "Worker already checked out"
+        );
         attendanceRecords[msg.sender].checkOutTime = block.timestamp;
         Attendance memory attendance = attendanceRecords[msg.sender];
-        totalHoursWorked[msg.sender] += attendance.checkOutTime - attendance.checkInTime;
-        emit WorkerCheckedOut(attendanceRecords[msg.sender].jobId, msg.sender, block.timestamp);
+        totalHoursWorked[msg.sender] +=
+            attendance.checkOutTime -
+            attendance.checkInTime;
+        removeHiredEmployee(_jobId);
+        emit WorkerCheckedOut(
+            attendanceRecords[msg.sender].jobId,
+            msg.sender,
+            block.timestamp
+        );
     }
-
 }
