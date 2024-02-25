@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { WCM } from "@/contracts/WCM";
-import HashAndError from "./HashAndError";
+import HashAndError from "./divcomponents/HashAndError";
 
 function PostJob({ account }) {
 	const { data: hash, error, isPending, writeContract } = useWriteContract();

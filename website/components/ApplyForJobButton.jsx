@@ -5,7 +5,7 @@ import {
 	useWriteContract,
 } from "wagmi";
 import { WCM } from "@/contracts/WCM";
-import HashAndError from "./HashAndError";
+import HashAndError from "./divcomponents/HashAndError";
 
 function ApplyForJobButton({ job }) {
 	const { address } = useAccount();
