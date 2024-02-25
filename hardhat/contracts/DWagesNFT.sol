@@ -30,6 +30,10 @@ contract DWagesNFT is ERC721Burnable {
         bool redeemed
     );
 
+    event NFTMintedAndListed(
+        uint256 tokenId
+    );
+
     event Redeemed(uint256 tokenId);
 
     error ContractCallFail(address caller, address contractAddress);
@@ -49,6 +53,7 @@ contract DWagesNFT is ERC721Burnable {
         uint256 newTokenId = _tokenIds;
         _mint(msg.sender, newTokenId);
         createMarketToken(newTokenId, price);
+        emit NFTMintedAndListed(newTokenId);
         _tokenIds++;
         return newTokenId;
     }
@@ -96,15 +101,15 @@ contract DWagesNFT is ERC721Burnable {
         uint currentIndex = 0;
 
         for (uint i = 0; i < totalTokensCount; i++) {
-            if (idToMarketToken[i + 1].owner == msg.sender) {
+            if (idToMarketToken[i].owner == msg.sender) {
                 itemCount += 1;
             }
         }
 
         MarketToken[] memory items = new MarketToken[](itemCount);
         for (uint i = 0; i < totalTokensCount; i++) {
-            if (idToMarketToken[i + 1].owner == msg.sender) {
-                uint currentId = i + 1;
+            if (idToMarketToken[i].owner == msg.sender) {
+                uint currentId = i;
                 MarketToken storage currentItem = idToMarketToken[currentId];
                 items[currentIndex] = currentItem;
                 currentIndex += 1;
