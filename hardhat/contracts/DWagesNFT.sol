@@ -61,7 +61,7 @@ contract DWagesNFT is ERC721Burnable {
 
     /* Mints a token and lists it in the marketplace */
     function mint(uint256 price) public payable returns (uint) {
-        require(wcmcontract.hasRole(WORKER_ROLE, msg.sender),"Need to be worker");
+        // require(wcmcontract.hasRole(WORKER_ROLE, msg.sender),"Need to be worker");
         uint256 newTokenId = _tokenIds;
         _mint(msg.sender, newTokenId);
         createMarketToken(newTokenId, price);
