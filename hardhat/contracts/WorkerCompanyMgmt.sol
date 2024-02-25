@@ -109,12 +109,12 @@ contract WorkerCompanyMgmt is AccessControl {
         emit WorkerAdded(_walletAddress, _location);
     }
 
-    function isWorker() external view returns (bool) {
-        return hasRole(WORKER_ROLE, msg.sender);
+    function isWorker(address _add) external view returns (bool) {
+        return hasRole(WORKER_ROLE, _add);
     }
 
-    function isCompany() external view returns (bool) {
-        return hasRole(COMPANY_ROLE, msg.sender);
+    function isCompany(address _add) external view returns (bool) {
+        return hasRole(COMPANY_ROLE, _add);
     }
 
     function postJob(
