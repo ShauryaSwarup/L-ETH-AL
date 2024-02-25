@@ -341,7 +341,19 @@ contract WorkerCompanyMgmt is AccessControl {
         }
     }
 
-    function checkIn(uint256 _jobId) external {
+    function pay(uint256 _jobId) internal {
+        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
+        require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
+        Attendance memory attendance = attendanceRecords[msg.sender];
+        uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
+        Job memory job = jobs[_jobId];
+        uint256 amount = hoursWorked * job.salary;
+        address companyWalletAddress = job.company;
+        require(companyWalletAddress.balance >= amount, "Insufficient balance in the contract");
+        payable(msg.sender).transfer(amount);        
+    }
+
+    function checkIn(uint256 _jobId) external payable {
         require(attendanceRecords[msg.sender].checkInTime == 0, "Worker already checked in");
         Attendance memory newAttendance = Attendance({
             jobId: _jobId,
@@ -353,28 +365,13 @@ contract WorkerCompanyMgmt is AccessControl {
         emit WorkerCheckedIn(_jobId, msg.sender, block.timestamp);
     }
 
-    function checkOut() external {
+    function checkOut(uint256 _jobId) external {
         require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
-        
         require(attendanceRecords[msg.sender].checkOutTime == 0, "Worker already checked out");
-        
         attendanceRecords[msg.sender].checkOutTime = block.timestamp;
         Attendance memory attendance = attendanceRecords[msg.sender];
         totalHoursWorked[msg.sender] += attendance.checkOutTime - attendance.checkInTime;
-        
         emit WorkerCheckedOut(attendanceRecords[msg.sender].jobId, msg.sender, block.timestamp);
     }
 
-    /* function pay(uint256 _jobId) external {
-        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
-        require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
-
-        Attendance memory attendance = attendanceRecords[msg.sender];
-        uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
-
-        Job memory job = jobs[_jobId];
-
-        uint256 amount = hoursWorked * job.salary;
-        require(job.company.balance >= amount, "Insufficient balance in the contract");        
-    } */
 }

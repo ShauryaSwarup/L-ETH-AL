@@ -158,7 +158,7 @@ describe("WorkerCompanyMgmt Test", function () {
     const blockBefore = await ethers.provider.getBlock("latest");
     await expect(workerCompanyMgmt.checkIn(0)).to.emit(workerCompanyMgmt, "WorkerCheckedIn").withArgs(0, owner, parseInt(blockBefore.timestamp) + 1);
     await expect(workerCompanyMgmt.checkIn(0)).to.be.revertedWith("Worker already checked in");
-    await expect(workerCompanyMgmt.checkOut()).to.emit(workerCompanyMgmt, "WorkerCheckedOut").withArgs(0, owner, parseInt(blockBefore.timestamp) + 3);
+    await expect(workerCompanyMgmt.checkOut(0)).to.emit(workerCompanyMgmt, "WorkerCheckedOut").withArgs(0, owner, parseInt(blockBefore.timestamp) + 3);
   }) 
 
 })
