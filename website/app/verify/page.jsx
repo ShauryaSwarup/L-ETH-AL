@@ -15,7 +15,7 @@ function Verify() {
 
 	return (
 		<>
-			<div className="border max-w-md mx-auto p-8 rounded-xl">
+			<div className="bg-gray-700 mt-24 max-w-md mx-auto p-8 rounded-xl">
 				<p className="text-center text-2xl font-bold text-white ">
 					Get verified
 				</p>

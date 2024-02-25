@@ -9,12 +9,12 @@ function Hero() {
                     <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold mb-4 justify-center'>
                         DeWages
                     </h1>
-                    <h2 className='text-2xl sm:text-2xl md:text-5xl font-semibold text-indigo-500 mb-6'>
+                    <h2 className='text-2xl sm:text-2xl md:text-5xl md:leading-tight font-extrabold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 mb-6'>
                         A decentralized hiring process
                     </h2>
-					<h3 className='text-xl sm:text-2xl md:text-3xl font-bold mb-4 justify-center'>
-						Get paid on time. Transparency. No-trust policy.
-					</h3>
+                    <h3 className='text-xl sm:text-2xl md:text-3xl font-bold mb-4 justify-center'>
+                        Get paid on time. Transparency. No-trust policy.
+                    </h3>
                     <Link href='/verify'>
                         <button className='p-3 bg-indigo-600 hover:bg-indigo-700 transition-all duration-100 rounded-xl'>
                             Get Verified!
@@ -33,7 +33,11 @@ function Hero() {
                         </div>
                     </div>
                     <div className='w-96 h-80 mx-8 flex flex-col items-center shadow-xl rounded-xl'>
-                        <Image src={"/handshake.png"} height='180' width='180' />
+                        <Image
+                            src={"/handshake.png"}
+                            height='180'
+                            width='180'
+                        />
                         <div className='z-20 flex flex-col p-5 items-center text-center'>
                             <h2 className='card-title'>Here to hire</h2>
                             <p>

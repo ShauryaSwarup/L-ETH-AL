@@ -35,7 +35,7 @@ export function AddCompany({ account }) {
 				/>
 			</div>
 			<div className="text-center mt-4">
-				<button type="submit" disabled={isPending} className="btn">
+				<button type="submit" disabled={isPending} className="btn bg-gray-500 rounded-xl p-4">
 					{isPending ? "Confirming..." : "Submit"}
 				</button>
 				<HashAndError

@@ -7,8 +7,11 @@
 const hre = require("hardhat");
 
 async function main() {
-    const lock = await hre.ethers.deployContract("DWagesNFT");
-    const contract = await lock.waitForDeployment();
+    const lock = await hre.ethers.getContractFactory("DWagesNFT");
+    const cont = await lock.deploy(
+        ethers.getAddress("0x594aF2B9fD4e6339BE43f0848Ddb139247680a00")
+    );
+    const contract = await cont.waitForDeployment();
 
     console.log(contract.target);
 }

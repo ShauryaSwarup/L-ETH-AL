@@ -37,7 +37,7 @@ function JobCheckOut({ params }) {
 	return (
 		<>
 			<h2 className="text-3xl font-bold text-center py-4">
-				Check in as :&nbsp;
+				Check out as :&nbsp;
 				<p className="inline-block bg-gray-700 p-1 rounded-xl">{address}</p>
 			</h2>
 			<JobCard job={job} />
