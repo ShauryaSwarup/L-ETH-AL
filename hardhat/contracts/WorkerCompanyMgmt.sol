@@ -67,6 +67,7 @@ contract WorkerCompanyMgmt is AccessControl {
     event WorkerAdded(address worker, string location);
     event WorkerCheckedIn(uint256 jobId, address workerWalletAddress, uint256 checkInTime);
     event WorkerCheckedOut(uint256 jobId, address workerWalletAddress, uint256 checkOutTime);
+    event PaymentMade(address _workerAddress, uint256 amount, bytes data);
 
     constructor() {
         jobIdCounter = 0;
@@ -109,12 +110,12 @@ contract WorkerCompanyMgmt is AccessControl {
         emit WorkerAdded(_walletAddress, _location);
     }
 
-    function isWorker() external view returns (bool) {
-        return hasRole(WORKER_ROLE, msg.sender);
+    function isWorker(address _add) external view returns (bool) {
+        return hasRole(WORKER_ROLE, _add);
     }
 
-    function isCompany() external view returns (bool) {
-        return hasRole(COMPANY_ROLE, msg.sender);
+    function isCompany(address _add) external view returns (bool) {
+        return hasRole(COMPANY_ROLE, _add);
     }
 
     function postJob(
@@ -345,6 +346,20 @@ contract WorkerCompanyMgmt is AccessControl {
         }
     }
 
+    function pay(uint256 _jobId) external payable {
+        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
+        require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
+        Attendance memory attendance = attendanceRecords[msg.sender];
+        uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
+        Job memory job = jobs[_jobId];
+        uint256 amount = hoursWorked * job.salary;
+        address companyWalletAddress = job.company;
+        require(companyWalletAddress.balance >= amount, "Insufficient balance in the contract");
+        (bool sent, bytes memory data) = payable(msg.sender).call{value: msg.value}("");
+        require(sent, "Failed to send Ether");
+        emit PaymentMade(msg.sender,msg.value,data);
+    }
+
     function checkIn(uint256 _jobId) external {
         require(attendanceRecords[msg.sender].checkInTime == 0, "Worker already checked in");
         Attendance memory newAttendance = Attendance({
@@ -359,26 +374,11 @@ contract WorkerCompanyMgmt is AccessControl {
 
     function checkOut() external {
         require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
-        
         require(attendanceRecords[msg.sender].checkOutTime == 0, "Worker already checked out");
-        
         attendanceRecords[msg.sender].checkOutTime = block.timestamp;
         Attendance memory attendance = attendanceRecords[msg.sender];
         totalHoursWorked[msg.sender] += attendance.checkOutTime - attendance.checkInTime;
-        
         emit WorkerCheckedOut(attendanceRecords[msg.sender].jobId, msg.sender, block.timestamp);
     }
 
-    /* function pay(uint256 _jobId) external {
-        require(attendanceRecords[msg.sender].checkInTime != 0, "Worker has not checked in");
-        require(attendanceRecords[msg.sender].checkOutTime != 0, "Worker has not checked out");
-
-        Attendance memory attendance = attendanceRecords[msg.sender];
-        uint256 hoursWorked = attendance.checkOutTime - attendance.checkInTime;
-
-        Job memory job = jobs[_jobId];
-
-        uint256 amount = hoursWorked * job.salary;
-        require(job.company.balance >= amount, "Insufficient balance in the contract");        
-    } */
 }
