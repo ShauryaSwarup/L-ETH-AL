@@ -10,6 +10,9 @@
     <br/>
     <br/>
   Empowering Blue Collar Workers: Transparency, Trust, and Timely Payments with deWages.<br>
+    <br />
+      <a href="https://l-eth-al.vercel.app/"><strong>Explore the website »</strong></a>
+    <br />
   DU Hacks 3.0 || Team L(ETH)AL.
 </div>
 <hr>
