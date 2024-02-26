@@ -71,16 +71,34 @@ The DApp involves two primary stakeholders: blue-collar workers and companies.
 <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/3cfbd6af-4c31-42c9-a365-3b5eb9433ca8">
 
 ## Screenshots
+#### Home page
 ![1](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/9fa86b4a-5ded-4ab0-8395-33410340e34a)
+#### Connected wallet
 <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/5361fcc3-e09d-4e11-89e8-87c0c4fdc53e">
+
+#### Verify as Worker/Company
 ![2](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/bbb6c7a6-c402-4b24-a2e1-e8aa8297ef90)
+#### Post new job as a Company
 ![3](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/50799198-b93f-4f0b-9c33-1d67a7695b6c)
+#### Check job listing as Worker
 ![4](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/f2b9ec59-6d41-425b-b484-4efadabfa9a4)
+#### Apply for a job as a Worker
 <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/d3eea936-5d7c-4f40-86cc-7b8c94e90439">
+
+#### Check all of your posted Jobs as a Company
 ![5](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/3753f951-c3ea-410f-a25e-7b2f134702d9)
+#### Check job applications on a job posting | Stake MATIC to hire employee
+
 <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/e7f335ba-2a7c-4323-91da-91ed7bb1c941">
+
+#### Take attendance as Company (Show QR Codes to workers on-site)
 ![8](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/2362d787-8dd6-4277-bc9d-b86e0f96ee5b)
+#### Check in as Worker
 ![10](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/34c35fda-293c-416a-a8b5-55e1fb2dd304)
+#### Checkout and get automatic payment on the basis of the number of hours worked 
+<img width="960" alt="image" src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/910d2e60-fd2d-4d17-aca7-8509d44c002b">
+
+#### Mint NFTs and Redeem as worker
 ![12](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/dd4973f8-e90c-4027-9e6e-976607388b79)
 
 ## 🤖Tech-Stack
