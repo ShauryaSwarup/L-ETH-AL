@@ -1,22 +1,38 @@
 <h1 align="center">
   <a href="https://github.com/ShauryaSwarup/L-ETH-AL">
-    <img src="./website/public/dewages-high-resolution-logo.png" alt="deCertify" width="250" height="250">
+    <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/e5031f4f-8f67-4607-8a70-beb8189d3108" alt="Logo" height="250">
   </a>
-  <br>
-  deWages
 </h1>
 
 <div align="center">
-   <strong>deWages</strong> - Empowering Blue Collar Workers: Transparency, Trust, and Timely Payments with deWages.<br>
+   <h3><strong>deWages</strong></h3>
+  <strong>| Get paid on time. Complete Transparency. No-trust policy. |</strong>
+    <br/>
+    <br/>
+  Empowering Blue Collar Workers: Transparency, Trust, and Timely Payments with deWages.<br>
   DU Hacks 3.0 || Team L(ETH)AL.
 </div>
 <hr>
 
-**Theme:** Web3, Open Innovation.
+**Theme:** Web3, Ethereum-Polygon, Open Innovation.
 
 **deWages** is a Decentralised Application (dApp) which addresses the  <b>exploitation of blue collar workers</b> by facilitating job enrollments and automatic payments, ensuring both --> The Employer and the Employee benefit from the Transparency.
+<details>
+  
+<summary>Table of Contents</summary>
+  
+- [Description](#description)
+- [Features](#features)
+- [Working](#working)
+- [Screenshots](#screenshots)
+- [Tech Stack](#tech-stack)
+- [Links](#links)
+- [Future Scope](#future-scope)
+- [Project Setup](#project-setup)
+- [Team Members](#team-members)
+</details>
 
-### Problems Faced By Daily Wage Wokers
+## Description
 1. **Lack of Job Security**<br>
 According to recent data, approximately 50% of the world's workforce is employed informally, with limited job security.
 2. **Limited Access to Social Security**<br>
@@ -24,7 +40,7 @@ Globally, only 29% of the working-age population has access to comprehensive soc
 3. **Lack of Data and Recognition**<br>
 In developing countries, the informal economy accounts for up to 70% of total employment.
 
-### Features
+## Features
 deWork offers the following features:
 - **Seamless Job Management**<br>
   Streamlined job posting, application, and hiring processes, enabling companies to effortlessly post daily job listings while allowing blue-collar workers to apply for suitable jobs. Fair Proximity-Based Workforce Allocaton.
@@ -33,7 +49,7 @@ deWork offers the following features:
 - **Incentive System**<br>
   Rewards blue-collar workers with NFTs based on their working hours. These NFTs can be redeemed for social security benefits.
 
-### Working
+## Working
 The DApp involves two primary stakeholders: blue-collar workers and companies.
 
 1. **Job Posting and Application**<br>
@@ -50,34 +66,65 @@ The DApp involves two primary stakeholders: blue-collar workers and companies.
 
 5. **Reward System with NFTs**<br>
    Workers are incentivized through a reward system where they earn non-fungible tokens (NFTs) based on the number of hours worked which can redeemed to leverage social security.
+  
+### Workflow of the website
+<img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/3cfbd6af-4c31-42c9-a365-3b5eb9433ca8">
 
-
-## Resources
-- [Demo Video]()
-- [GitHub Repository](https://github.com/ShauryaSwarup/L-ETH-AL)
-- [Deployed Contract on Polygon]()
-- [Devfolio Submission]()
+## Screenshots
+![1](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/9fa86b4a-5ded-4ab0-8395-33410340e34a)
+<img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/5361fcc3-e09d-4e11-89e8-87c0c4fdc53e">
+![2](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/bbb6c7a6-c402-4b24-a2e1-e8aa8297ef90)
+![3](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/50799198-b93f-4f0b-9c33-1d67a7695b6c)
+![4](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/f2b9ec59-6d41-425b-b484-4efadabfa9a4)
+<img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/d3eea936-5d7c-4f40-86cc-7b8c94e90439">
+![5](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/3753f951-c3ea-410f-a25e-7b2f134702d9)
+<img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/e7f335ba-2a7c-4323-91da-91ed7bb1c941">
+![8](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/2362d787-8dd6-4277-bc9d-b86e0f96ee5b)
+![10](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/34c35fda-293c-416a-a8b5-55e1fb2dd304)
+![12](https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/dd4973f8-e90c-4027-9e6e-976607388b79)
 
 ## 🤖Tech-Stack
 
-#### Web
-- NextJS
-- Tailwind CSS
-- Wagmi
-- Viem
-- RainbowKit
+### Web
+- ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+- ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+- <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/923c758d-a0f8-4051-9f30-e85be77e4769" width="85" height="20">
+- <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/a83962af-5df0-485b-8bde-00c015bcc75b" width="85" height="20">
+- <img src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/be1280cb-757a-414d-b546-8da89a2f4318" width="50" height="50">
+- <img width="85" alt="image" src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/1e249feb-369a-4ec6-9cd2-bb9d0c52c57e">
 
-#### Blockchain
-- Solidity
-- Hardhat
-- Polygon
 
+### Blockchain
+- ![Solidity](https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white)
+- <img width="50" alt="image" src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/88729b02-1b48-48b7-9c4c-b3ffb2c0da20">
+- <img width="100" alt="image" src="https://github.com/ShauryaSwarup/L-ETH-AL/assets/116104916/3e2a2b68-3040-48dc-aadf-7d46b1fa99b3">
+- ![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)
+
+
+## Links
+- [Demo Video](https://youtu.be/ofJUteFl3uY?si=lWQQn4JZncpA1CYU)
+- [GitHub Repository](https://github.com/ShauryaSwarup/L-ETH-AL)
+- [Deployed Contract on Polygon](https://mumbai.polygonscan.com/address/0x594aF2B9fD4e6339BE43f0848Ddb139247680a00)
+- [Deployed NFT Contract on Polygon](https://mumbai.polygonscan.com/address/0x69e3c24fcf84a318Ab78d031AF703b4908b1aD62)
+- [Devfolio Submission]()
 
 ## 🔮Future Scope
 - Location Based Attendance: If worker within site radius, then mark as present.
 - Add more NFTs for higher Social Security.
 - Add Graphql Functionality for faster querying.
 
+## 🛠Project Setup
+1. Clone the repository
+```
+https://github.com/ShauryaSwarup/l-eth-al.git
+```
+To start the frontend user interface
+```
+cd website
+npm install
+npm run dev
+```
+(Run `npm install --legacy-peer-deps` if you encounter issues in package installations)
 
 ## 👨‍💻Team Members
 - [Shaurya Swarup](https://github.com/ShauryaSwarup)
